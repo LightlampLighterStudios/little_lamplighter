@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
         // LEFT / RIGHT movement with arrow keys or A/D.
         // We move by changing velocity.x so it works in the air too (for jumping sideways over puddles).
         float input = Input.GetAxisRaw("Horizontal");   // -1 left, +1 right, 0 none
-        rb.velocity = new Vector2(input * moveSpeed, rb.velocity.y);
+        rb.linearVelocity = new Vector2(input * moveSpeed, rb.linearVelocity.y);
 
         // keep him inside the allowed zone we don't want our littleLamplighter walking of the screen
         float clampedX = Mathf.Clamp(transform.position.x, minX, maxX);
@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
         // JUMP with Space, only when on the ground
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             isGrounded = false;
         }
     }
