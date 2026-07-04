@@ -21,3 +21,7 @@ git clone https://github.com/lucasfgp/little_lamplighter.git
 cd little_lamplighter
 git lfs pull
 ```
+
+## Open the Scene
+
+When you first open Unity, you may have an empty scene. To open the scene open `Assets/Scenes/LittleLamplighter.unity`
