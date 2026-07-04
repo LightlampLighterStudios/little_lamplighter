@@ -4,7 +4,7 @@
 
 This project uses **Git LFS** for large files such as images, audio, fonts, models, and Unity packages.
 
-First, install Git LFS from:
+First, make sure Git is installed, then install Git LFS from:
 
 https://git-lfs.com/
 
