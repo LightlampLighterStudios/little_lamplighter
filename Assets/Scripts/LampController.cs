@@ -31,7 +31,7 @@ public class LampController : MonoBehaviour
         if (!isLit)
         {
             // This will check players proximity so if player is nearby AND holding E
-            if (playerNearby && Input.GetKey(KeyCode.E))
+            if (playerNearby && PlayerController.InteractHeld)
             {
                 // adding to the hold timer
                 holdTimer += Time.deltaTime;
