@@ -36,18 +36,18 @@ GitHub Desktop supports Git LFS and should automatically download the project's 
 All new work must start from the `develop` branch.
 
 1. Switch to the `develop` branch in GitHub Desktop.
-   git checkout develop
+   `git checkout develop`
 2. Pull the latest changes using **Repository -> Pull**.
-   git pull origin develop
+   `git pull origin develop`
 3. Create a new branch from `develop`:
    - Use `feat/<short-description>` for new features.
    - Use `fix/<short-description>` for bug fixes.
-   git checkout -b feat/<short-description>
+   `git checkout -b feat/<short-description>`
 4. Make and commit your changes on the new branch.
-   git add .
-   git commit -m "Describe your change"
+   `git add .`
+   `git commit -m "Describe your change"`
 5. Push the branch to GitHub.
-   git push -u origin feat/<short-description>
+   `git push -u origin feat/<short-description>`
 6. Open a pull request to merge your branch back into `develop`.
    In GitHub Desktop: click Create Pull Request (opens the browser).
    Or via CLI (requires GitHub CLI): gh pr create --base develop
