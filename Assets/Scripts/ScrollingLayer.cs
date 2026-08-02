@@ -79,6 +79,24 @@ public sealed class ScrollingLayer : MonoBehaviour
         RecycleOffscreenTiles(layerDistance);
     }
 
+    // Restores this looping layer to its camera-aligned arrangement.
+    // WorldScroller uses this when restarting a level.
+    public void ResetLayer()
+    {
+        // Ignore the request if the layer has no usable setup.
+        if (
+            targetCamera == null ||
+            tiles == null ||
+            tiles.Length == 0
+        )
+        {
+            return;
+        }
+
+        // Arrange the tiles from the camera's left edge again.
+        ArrangeTiles();
+    }
+
     private bool HasValidSetup()
     {
         // The system requires an orthographic camera aligned with world X.
