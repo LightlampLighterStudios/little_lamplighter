@@ -1,208 +1,117 @@
+
 using UnityEngine;
 using UnityEngine.UI;
 
-// GameManager is the brain of the level.
-// It keeps the clock, counts lamps, stores Sparks,
-// and decides when the level ends.
+//  GameManager is the "brain" of the level.
+// It keeps the clock (the darkening sky), counts lamps,
+// holds the Sparks which will be the currency and decides win or lose.
 
 public class GameManager : MonoBehaviour
 {
-    // Singleton access used by LampController and other gameplay scripts.
+    // SINGLETON: lets other scripts reach this one by typing
+    // GameManager.instance (that is what LampController uses).
+
     public static GameManager instance;
 
     [Header("Lamps")]
-    public int totalLamps = 1;
-    private int lampsLit = 0;
+    public int totalLamps = 1;   // how many lamps are in the level (for reference)
+    private int lampsLit = 0;    // how many are lit so far
 
-    [Header("Sparks")]
-    public int sparks = 0;
-    public Text sparkText;
+    [Header("Sparks (currency)")]
+    public int sparks = 0;       // earned 1 per lamp, saved for later
+    public Text sparkText;   //  SparkCounter will wdit later in inspector
 
-    [Header("Lives")]
-    public int lives = 3;
 
-    [Header("Sky Clock")]
-    public float nightLength = 90f;
 
-    public Color sunsetColor =
-        new Color(0.95f, 0.55f, 0.25f);
+    [Header("Lives (orbs on the taper)")]
+    public int lives = 3;        // lose one to the dog etc; lose all three = game over
 
-    public Color nightColor =
-        new Color(0.07f, 0.08f, 0.20f);
+    //will be adding more colors later to give a better sunset vibe 
+    //colors will be going from yellow-orange-red-pink-purple-navy (pastelcolors)
 
-    [Header("Level Flow")]
-    // The WorldScroller is stopped until BeginLevel is called.
-    [SerializeField] private WorldScroller worldScroller;
-
-    // Time spent in the active level.
+    [Header("The Sky Clock")]
+    public float nightLength = 90f;   // seconds from sunset to full dark
+    public Color sunsetColor = new Color(0.95f, 0.55f, 0.25f); // warm start
+    public Color nightColor  = new Color(0.07f, 0.08f, 0.20f); // navy end
     private float timer = 0f;
 
     private bool gameOver = false;
-    private bool levelStarted = false;
 
     private Camera cam;
+    // Awake runs before everything, so instance is ready
+    // before any lamp tries to use it.
 
-    // Normalized progress from 0 at sunset to 1 at full night.
-    // SkyProgressController uses this value for moon and star fading.
-    public float NightProgress =>
-        Mathf.Clamp01(
-            timer / Mathf.Max(0.01f, nightLength)
-        );
-
-    public bool IsLevelStarted => levelStarted;
-
-    private void Awake()
+    void Awake()
     {
-        // Awake runs before other scripts, so the singleton is ready early.
         instance = this;
     }
-
-    private void Start()
+    void Start()
     {
-        // Find the camera used to display the level.
-        cam = Camera.main;
-
+        cam = Camera.main;            // finds the object tagged as that of MainCamera
         if (cam != null)
         {
-            // The level begins with the warm sunset colour.
-            cam.backgroundColor = sunsetColor;
-        }
-
-        // Use a scene WorldScroller automatically when one is not assigned.
-        if (worldScroller == null)
-        {
-            worldScroller =
-                FindFirstObjectByType<WorldScroller>();
-        }
-
-        // The tutorial trigger will start the level later.
-        if (worldScroller != null)
-        {
-            worldScroller.StopScrolling();
+            cam.backgroundColor = sunsetColor;  // begin at sunset
         }
     }
-
-    private void Update()
+    void Update()
     {
-        // Do not advance the clock before the level starts.
-        if (gameOver || !levelStarted)
-        {
-            return;
-        }
-
-        // Advance the sky clock.
+        if (gameOver) return;   // stop once the round is decided
+        // advance the clock
         timer += Time.deltaTime;
-
-        // Move the camera colour gradually toward night.
+        // how far through the night: 0 at start, 1 at full dark
+        float t = timer / nightLength;
+        // darken the sky from sunset toward night
         if (cam != null)
         {
-            cam.backgroundColor =
-                Color.Lerp(
-                    sunsetColor,
-                    nightColor,
-                    NightProgress
-                );
+            cam.backgroundColor = Color.Lerp(sunsetColor, nightColor, t);
         }
-
-        // End the level when the sky reaches full night.
+        // night is over: you survived to full dark, the city sleeps, shift done
         if (timer >= nightLength)
         {
             NightOver();
         }
     }
-
-    // Called by the tutorial trigger once the player reaches the street.
-    public void BeginLevel()
-    {
-        // Ignore duplicate trigger calls or calls after game over.
-        if (gameOver || levelStarted)
-        {
-            return;
-        }
-
-        levelStarted = true;
-
-        // Find the scroller if the Inspector reference is empty.
-        if (worldScroller == null)
-        {
-            worldScroller =
-                FindFirstObjectByType<WorldScroller>();
-        }
-
-        // Start all configured parallax layers.
-        if (worldScroller != null)
-        {
-            worldScroller.StartScrolling();
-        }
-    }
-
-    // Called when a lamp finishes lighting.
+    // Called by a lamp when it finishes lighting.
     public void LampLit()
     {
         lampsLit++;
         sparks++;
-
-        Debug.Log(
-            "Lamp lit! Sparks: " + sparks
-        );
-
+        Debug.Log("Lamp lit!  Sparks: " + sparks);
         if (sparkText != null)
         {
+            //later add picture I drew of spark instead of plain number
             sparkText.text = " " + sparks;
         }
+        // NOTE: missing a lamp no longer loses the game.
+        // Lamps are just score now. You only lose by running out of lives.
     }
-
-    // Called when the player loses a life.
+    // Called by the dog (or other obstacles) later when the player fails.
     public void LoseLife()
     {
         lives--;
-
-        Debug.Log(
-            "Lost a life! Orbs left: " + lives
-        );
-
+        Debug.Log("Lost a life! Orbs left: " + lives);
         if (lives <= 0)
         {
             GameOver();
         }
     }
-
-    // Reserved for the future lamp-lighting progress bar.
+    // will be called every frame while the player holds E.
+    // progress goes 0 to 1. No on-screen bar yet so this is empty for now. 
+    // The real loading bar plugs in here later.
     public void UpdateLoadingBar(float progress)
     {
-        // The loading bar will use this value later.
+        // intentionally empty for the prototype
     }
-
-    // Called when the 90-second night reaches its end.
-    private void NightOver()
+    // Reached full dark with at least one orb left = you survived the night.
+    void NightOver()
     {
         gameOver = true;
-
-        if (worldScroller != null)
-        {
-            worldScroller.StopScrolling();
-        }
-
-        Debug.Log(
-            "NIGHT FELL. The city sleeps. " +
-            "You survived with " +
-            sparks +
-            " sparks!"
-        );
+        Debug.Log("NIGHT FELL. The city sleeps. You survived with " + sparks + " sparks!");
     }
-
-    // Called when all lives have been lost.
-    private void GameOver()
+    // Ran out of orbs = game over early.
+    void GameOver()
     {
         gameOver = true;
-
-        if (worldScroller != null)
-        {
-            worldScroller.StopScrolling();
-        }
-
-        Debug.Log(
-            "GAME OVER. You ran out of orbs."
-        );
+        Debug.Log("GAME OVER. You ran out of orbs.");
     }
 }
