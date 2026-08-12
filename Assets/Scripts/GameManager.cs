@@ -5,7 +5,9 @@ using UnityEngine.UI;
 // It keeps the clock, counts lamps, stores Sparks,
 // and decides when the level ends.
 
+
 public class GameManager : MonoBehaviour
+
 {
     // Singleton access used by LampController and other gameplay scripts.
     public static GameManager instance;
@@ -36,7 +38,6 @@ public class GameManager : MonoBehaviour
 
     // Time spent in the active level.
     private float timer = 0f;
-
     private bool gameOver = false;
     private bool levelStarted = false;
 
@@ -65,8 +66,7 @@ public class GameManager : MonoBehaviour
         if (cam != null)
         {
             // The level begins with the warm sunset colour.
-            cam.backgroundColor = sunsetColor;
-        }
+            cam.backgroundColor = GetSunsetColor(0f);        }
 
         // Use a scene WorldScroller automatically when one is not assigned.
         if (worldScroller == null)
@@ -96,12 +96,7 @@ public class GameManager : MonoBehaviour
         // Move the camera colour gradually toward night.
         if (cam != null)
         {
-            cam.backgroundColor =
-                Color.Lerp(
-                    sunsetColor,
-                    nightColor,
-                    NightProgress
-                );
+            cam.backgroundColor = GetSunsetColor(NightProgress);
         }
 
         // End the level when the sky reaches full night.
@@ -109,6 +104,38 @@ public class GameManager : MonoBehaviour
         {
             NightOver();
         }
+    }
+    // Returns the sky color for a given time progress (0 to 1).
+    // Interpolates smoothly through 7 beautiful sunset stages.
+
+
+    private Color GetSunsetColor(float t)
+    {
+        // Define the gradient stops for a realistic sunset with pastel tones for that warm story book effect
+        Color[] sunsetColors = new Color[]
+        {
+            
+            new Color(0.714f, 0.890f, 1.0f),  // light blue (#b6e3ff)
+            new Color(0.961f, 1.0f, 0.859f),  // pale yellow-green (#f5ffdb)
+            new Color(0.996f, 0.937f, 0.698f),  // yellow (#feefb2)
+            new Color(0.996f, 0.831f, 0.698f),  // peach-orange (#fed4b2)
+            new Color(0.976f, 0.827f, 0.902f),  // pink (#f9d3e6)
+            new Color(0.392f, 0.337f, 0.471f),  // purple (#645678)
+            new Color(0.090f, 0.227f, 0.388f)   // dark blue (#173a63)
+        };
+        
+        // Scale t to span across all color stops
+        float scaledT = t * (sunsetColors.Length - 1);
+        
+        // for find which two colors we're currently between
+        int colorIndex = Mathf.FloorToInt(scaledT);
+        colorIndex = Mathf.Clamp(colorIndex, 0, sunsetColors.Length - 2);
+        
+        // Get the interpolation value (0 to 1) between these two colors
+        float localT = scaledT - colorIndex;
+        
+        // Smoothly blend from one color to the next
+        return Color.Lerp(sunsetColors[colorIndex], sunsetColors[colorIndex + 1], localT);
     }
 
     // Called by the tutorial trigger once the player reaches the street.
@@ -166,8 +193,11 @@ public class GameManager : MonoBehaviour
             GameOver();
         }
     }
+    // will be called every frame while the player holds E.
+    // progress goes 0 to 1. No on-screen bar yet so this is empty for now. 
+    // The real loading bar plugs in here later.
 
-    // Reserved for the future lamp-lighting progress bar.
+
     public void UpdateLoadingBar(float progress)
     {
         // The loading bar will use this value later.

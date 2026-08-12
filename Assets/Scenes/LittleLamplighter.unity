@@ -626,7 +626,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1050421433
   m_SortingLayer: -3
-  m_SortingOrder: 5
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 72f7f280385b745d3acfdafab31f404c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1695,21 +1695,6 @@ PrefabInstance:
       propertyPath: targetCamera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: finiteGroups.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: 'finiteGroups.Array.data[0]'
-      value: 
-      objectReference: {fileID: 7579629868938918481}
-    - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: 'finiteGroups.Array.data[1]'
-      value: 
-      objectReference: {fileID: 7579629868938918480}
     - target: {fileID: 3815733183553756766, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
         type: 3}
       propertyPath: m_SortingLayer
@@ -1760,32 +1745,12 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: 1050421433
       objectReference: {fileID: 0}
-    - target: {fileID: 5152752301784967836, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5152752301784967836, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1050421433
-      objectReference: {fileID: 0}
     - target: {fileID: 5216017772563096488, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
         type: 3}
       propertyPath: m_SortingLayer
       value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 5216017772563096488, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1050421433
-      objectReference: {fileID: 0}
-    - target: {fileID: 5264476879678903321, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5264476879678903321, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
         type: 3}
       propertyPath: m_SortingLayerID
       value: 1050421433
@@ -1890,26 +1855,6 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: -1370160495
       objectReference: {fileID: 0}
-    - target: {fileID: 7261181507576183683, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7261181507576183683, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1050421433
-      objectReference: {fileID: 0}
-    - target: {fileID: 7433559391965347212, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7433559391965347212, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1050421433
-      objectReference: {fileID: 0}
     - target: {fileID: 7528110143369551460, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
         type: 3}
       propertyPath: m_SortingLayer
@@ -1945,36 +1890,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: WorldScroller
       objectReference: {fileID: 0}
-    - target: {fileID: 8344950016456709125, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8344950016456709125, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1050421433
-      objectReference: {fileID: 0}
-    - target: {fileID: 8446692461188137085, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8446692461188137085, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1050421433
-      objectReference: {fileID: 0}
-    - target: {fileID: 8907775246673902909, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: -3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8907775246673902909, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-        type: 3}
-      propertyPath: m_SortingLayerID
-      value: 1050421433
-      objectReference: {fileID: 0}
     - target: {fileID: 9209212816898608435, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
         type: 3}
       propertyPath: m_SortingLayer
@@ -1990,30 +1905,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8, type: 3}
---- !u!114 &7579629868938918480 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 961270599068810899, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-    type: 3}
-  m_PrefabInstance: {fileID: 7579629868938918479}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17c4ff8b059b3884e8b93a1ef743479f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FiniteScrollingGroup
---- !u!114 &7579629868938918481 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8190780136225168124, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
-    type: 3}
-  m_PrefabInstance: {fileID: 7579629868938918479}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17c4ff8b059b3884e8b93a1ef743479f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FiniteScrollingGroup
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
