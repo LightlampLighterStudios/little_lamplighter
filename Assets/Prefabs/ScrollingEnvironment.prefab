@@ -6235,7 +6235,10 @@ MonoBehaviour:
   - {fileID: 7100143114861835683}
   - {fileID: 6075140783145827815}
   - {fileID: 2024391519898175518}
-  finiteGroups: []
+  finiteGroups:
+  - {fileID: 8190780136225168124}
+  - {fileID: 7087606555707935656}
+  - {fileID: 961270599068810899}
 --- !u!1 &8679590396700889560
 GameObject:
   m_ObjectHideFlags: 0
