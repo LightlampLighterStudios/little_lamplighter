@@ -29,6 +29,9 @@ public sealed class WorldScroller : MonoBehaviour
 
     public bool IsScrolling => isScrolling;
 
+    public float CurrentScrollSpeed =>
+    isScrolling ? scrollSpeed : 0f;
+
     private void Start()
     {
         // Use the scene's main camera when none is assigned.
