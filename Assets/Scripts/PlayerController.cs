@@ -3,6 +3,11 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private WorldScroller worldScroller;
+
+    [SerializeField, Min(0f)]
+    private float backwardScrollCompensation = 1f;
+
     public float moveSpeed = 5f;     // how fast he walks left/right
     public float jumpForce = 12f;    // how high he jumps
     public bool isGrounded = true;
@@ -37,6 +42,11 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogWarning("PlayerInput component is missing from the Player.");
         }
+
+        if (worldScroller == null)
+        {
+            worldScroller = FindFirstObjectByType<WorldScroller>();
+        }
     }
 
     void Update()
@@ -48,7 +58,19 @@ public class PlayerController : MonoBehaviour
         // LEFT / RIGHT movement with arrow keys or A/D.
         // We move by changing velocity.x so it works in the air too (for jumping sideways over puddles).
         // Input now comes from OnMove instead of Input.GetAxisRaw("Horizontal").
-        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+        float horizontalSpeed = moveSpeed;
+
+        if (moveInput < 0f && worldScroller != null)
+        {
+            horizontalSpeed +=
+                worldScroller.CurrentScrollSpeed *
+                backwardScrollCompensation;
+        }
+
+        rb.linearVelocity = new Vector2(
+            moveInput * horizontalSpeed,
+            rb.linearVelocity.y
+        );
 
         // keep him inside the allowed zone we don't want our littleLamplighter walking of the screen
         float clampedX = Mathf.Clamp(transform.position.x, minX, maxX);
