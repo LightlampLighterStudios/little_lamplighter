@@ -15,7 +15,6 @@ public sealed class LampController : MonoBehaviour
     // first light from the mandatory relight.
     private bool hasEverBeenLit;
     private PlayerController nearbyPlayer;
-    private PlayerInventory nearbyInventory;
     private float holdTimer;
     private SpriteRenderer spriteRenderer;
     private AudioSource audioSource;
@@ -46,9 +45,7 @@ public sealed class LampController : MonoBehaviour
 
         // only run this code if the lamp isn't already lit
         // This will check players proximity so if player is nearby AND holding E
-        bool hasTaper = nearbyInventory == null || nearbyInventory.HasTaper;
-
-        if (nearbyPlayer != null && hasTaper && PlayerController.InteractHeld)
+        if (nearbyPlayer != null && PlayerController.InteractHeld)
         {
             // adding to the hold timer
             holdTimer += Time.deltaTime;
@@ -161,7 +158,6 @@ public sealed class LampController : MonoBehaviour
         if (player != null)
         {
             nearbyPlayer = player;
-            nearbyInventory = player.GetComponent<PlayerInventory>();
         }
     }
 
@@ -176,7 +172,6 @@ public sealed class LampController : MonoBehaviour
         }
 
         nearbyPlayer = null;
-        nearbyInventory = null;
         ResetHold();
     }
 }
