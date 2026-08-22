@@ -32,6 +32,18 @@ public sealed class WorldScroller : MonoBehaviour
     public float CurrentScrollSpeed =>
     isScrolling ? scrollSpeed : 0f;
 
+    public void Configure(
+        Camera cameraToUse,
+        ScrollingLayer[] scrollingLayers,
+        FiniteScrollingGroup[] scrollingGroups,
+        float speed = 2f)
+    {
+        targetCamera = cameraToUse;
+        layers = scrollingLayers;
+        finiteGroups = scrollingGroups;
+        scrollSpeed = Mathf.Max(0f, speed);
+    }
+
     private void Start()
     {
         // Use the scene's main camera when none is assigned.

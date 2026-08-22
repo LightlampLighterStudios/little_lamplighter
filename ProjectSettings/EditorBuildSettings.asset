@@ -8,5 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LittleLamplighter.unity
     guid: c7af41e93a30b447b8ade8a82ed5336d
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 5988ef718135e9a4583318eb0d6cfd7a,
+      type: 3}
   m_UseUCBPForAssetBundles: 0
