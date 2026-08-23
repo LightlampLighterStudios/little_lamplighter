@@ -14,6 +14,14 @@ public sealed class ScrollStartTrigger : MonoBehaviour
     // Prevents the trigger from starting the level repeatedly.
     private bool hasTriggered;
 
+    public void Configure(
+        GameManager manager,
+        GameObject prompt)
+    {
+        gameManager = manager;
+        tutorialPrompt = prompt;
+    }
+
     private void Awake()
     {
         // This collider should detect the player without blocking movement.

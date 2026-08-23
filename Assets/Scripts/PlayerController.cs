@@ -1,46 +1,46 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public sealed class PlayerController : MonoBehaviour
 {
     [SerializeField] private WorldScroller worldScroller;
-
-    [SerializeField, Min(0f)]
-    private float backwardScrollCompensation = 1f;
-
-    public float moveSpeed = 5f;     // how fast he walks left/right
-    public float jumpForce = 12f;    // how high he jumps
-    public bool isGrounded = true;
-
+    [SerializeField, Min(0f)] private float backwardScrollCompensation = 1f;
+    [SerializeField, Min(0f)] private float moveSpeed = 5f;     // how fast he walks left/right
+    [SerializeField, Min(0f)] private float jumpForce = 15f;    // how high he jumps
     // The little zone he's allowed to walk within (stops him leaving the screen)
-    public float minX = -8f;
-    public float maxX = 8f;
+    [SerializeField] private float minX = -27f;
+    [SerializeField] private float maxX = 27f;
 
+    private Rigidbody2D body;
+    private PlayerInput playerInput;
+    private InputAction interactAction;
     // Stores left/right movement from the new Unity Input System.
-    private float moveInput = 0f;
+    private float moveInput;
+    private float speedMultiplier = 1f;
+    private bool grounded = true;
+    private bool controlsEnabled = true;
+    private Coroutine slowRoutine;
 
     // Stores whether the player is currently holding the interact button.
     // LampController reads this to check if the player is holding E near a lamp.
     public static bool InteractHeld { get; private set; }
+    public event Action MovementPerformed;
+    public event Action JumpPerformed;
 
-    private Rigidbody2D rb;
-    private PlayerInput playerInput;
-    private InputAction interactAction;
+    public Rigidbody2D Body => body;
+    public bool IsGrounded => grounded;
 
-    void Start()
+    private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-
-        // Gets the PlayerInput component so we can read the Interact action directly.
+        body = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
 
         if (playerInput != null)
         {
+            // Gets the PlayerInput component so we can read the Interact action directly.
             interactAction = playerInput.actions.FindAction("Interact");
-        }
-        else
-        {
-            Debug.LogWarning("PlayerInput component is missing from the Player.");
         }
 
         if (worldScroller == null)
@@ -49,16 +49,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
         // Check every frame whether E / Interact is currently being held.
         // This avoids InteractHeld getting stuck on true after the button is released.
-        InteractHeld = interactAction != null && interactAction.IsPressed();
+        InteractHeld =
+            controlsEnabled &&
+            interactAction != null &&
+            interactAction.IsPressed();
+
+        if (body == null)
+        {
+            return;
+        }
 
         // LEFT / RIGHT movement with arrow keys or A/D.
         // We move by changing velocity.x so it works in the air too (for jumping sideways over puddles).
         // Input now comes from OnMove instead of Input.GetAxisRaw("Horizontal").
-        float horizontalSpeed = moveSpeed;
+        float horizontalSpeed = moveSpeed * speedMultiplier;
 
         if (moveInput < 0f && worldScroller != null)
         {
@@ -67,60 +75,126 @@ public class PlayerController : MonoBehaviour
                 backwardScrollCompensation;
         }
 
-        rb.linearVelocity = new Vector2(
-            moveInput * horizontalSpeed,
-            rb.linearVelocity.y
-        );
+        body.linearVelocity = new Vector2(
+            controlsEnabled ? moveInput * horizontalSpeed : 0f,
+            body.linearVelocity.y);
 
         // keep him inside the allowed zone we don't want our littleLamplighter walking of the screen
-        float clampedX = Mathf.Clamp(transform.position.x, minX, maxX);
-        transform.position = new Vector3(clampedX, transform.position.y, transform.position.z);
+        Vector3 position = transform.position;
+        position.x = Mathf.Clamp(position.x, minX, maxX);
+        transform.position = position;
     }
 
-    // Called by the new Unity Input System when the Move action changes.
-    // This should be linked to A/D and Left/Right arrows in InputSystem_Actions.
+    public void Configure(WorldScroller scroller)
+    {
+        worldScroller = scroller;
+    }
+
     public void OnMove(InputValue value)
     {
+        // Called by the new Unity Input System when the Move action changes.
+        // This should be linked to A/D and Left/Right arrows in InputSystem_Actions.
         Vector2 input = value.Get<Vector2>();
-        moveInput = input.x;
+        moveInput = controlsEnabled ? input.x : 0f;
+
+        if (Mathf.Abs(moveInput) > 0.01f)
+        {
+            MovementPerformed?.Invoke();
+        }
     }
 
-    // JUMP with Space, only when on the ground.
-    // Called by the new Unity Input System when the Jump action is pressed.
     public void OnJump(InputValue value)
     {
-        if (!value.isPressed || !isGrounded)
+        // JUMP with Space, only when on the ground.
+        // Called by the new Unity Input System when the Jump action is pressed.
+        if (!controlsEnabled || !value.isPressed || !grounded || body == null)
         {
             return;
         }
 
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-        isGrounded = false;
+        body.linearVelocity = new Vector2(body.linearVelocity.x, jumpForce);
+        grounded = false;
+        JumpPerformed?.Invoke();
     }
 
-    // INTERACT with E.
-    // This method can stay here for PlayerInput Send Messages,
-    // but Update() is the main place where InteractHeld is checked.
     public void OnInteract(InputValue value)
     {
-        InteractHeld = interactAction != null && interactAction.IsPressed();
+        // INTERACT with E.
+        // This method can stay here for PlayerInput Send Messages,
+        // but Update() is the main place where InteractHeld is checked.
+        InteractHeld =
+            controlsEnabled &&
+            interactAction != null &&
+            interactAction.IsPressed();
     }
 
-    void OnDisable()
+    public void ApplySlow(float multiplier, float duration)
+    {
+        // Replacing the current routine makes repeated puddle contacts use a
+        // single predictable slowdown window.
+        if (slowRoutine != null)
+        {
+            StopCoroutine(slowRoutine);
+        }
+
+        slowRoutine = StartCoroutine(SlowRoutine(multiplier, duration));
+    }
+
+    public void SetControlsEnabled(bool enabled)
+    {
+        controlsEnabled = enabled;
+
+        if (!enabled)
+        {
+            moveInput = 0f;
+            InteractHeld = false;
+        }
+    }
+
+    public void Teleport(Vector3 position)
+    {
+        // Checkpoint restores also clear residual physics velocity.
+        transform.position = position;
+
+        if (body != null)
+        {
+            body.linearVelocity = Vector2.zero;
+            body.angularVelocity = 0f;
+        }
+
+        grounded = true;
+    }
+
+    private IEnumerator SlowRoutine(float multiplier, float duration)
+    {
+        speedMultiplier = Mathf.Clamp(multiplier, 0.05f, 1f);
+        yield return new WaitForSeconds(Mathf.Max(0f, duration));
+        speedMultiplier = 1f;
+        slowRoutine = null;
+    }
+
+    private void OnDisable()
     {
         moveInput = 0f;
         InteractHeld = false;
     }
 
-    // While he is touching the ground, he is allowed to jump.
-    void OnCollisionStay2D(Collision2D col)
+    private void OnCollisionStay2D(Collision2D collision)
     {
-        isGrounded = true;
+        // While he is touching the ground, he is allowed to jump.
+        foreach (ContactPoint2D contact in collision.contacts)
+        {
+            if (contact.normal.y > 0.35f)
+            {
+                grounded = true;
+                return;
+            }
+        }
     }
 
-    // The moment he leaves the ground, he's airborne.
-    void OnCollisionExit2D(Collision2D col)
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        isGrounded = false;
+        // The moment he leaves the ground, he's airborne.
+        grounded = false;
     }
 }
