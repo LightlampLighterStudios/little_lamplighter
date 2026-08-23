@@ -286,7 +286,8 @@ public sealed class TutorialDirector : MonoBehaviour
     {
         if (
             puddle == tutorialPuddle &&
-            state == TutorialState.ClearingTutorialPuddle &&
+            (state == TutorialState.WaitingForPuddleJump ||
+            state == TutorialState.ClearingTutorialPuddle) &&
             !respawning)
         {
             StartCoroutine(RestoreCheckpointRoutine(true));

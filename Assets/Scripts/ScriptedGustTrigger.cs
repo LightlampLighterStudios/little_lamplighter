@@ -61,7 +61,10 @@ public sealed class ScriptedGustTrigger : MonoBehaviour
 
         triggered = true;
         triggerCollider.enabled = false;
-        gustAudio?.Play();
+        if (gustAudio != null)
+        {
+            gustAudio.Play();
+        }
 
         if (gustVisual != null)
         {

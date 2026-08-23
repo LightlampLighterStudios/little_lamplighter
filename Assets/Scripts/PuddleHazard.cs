@@ -22,7 +22,10 @@ public sealed class PuddleHazard : MonoBehaviour
     private void Awake()
     {
         GetComponent<Collider2D>().isTrigger = true;
-        splashAudio ??= GetComponent<AudioSource>();
+        if (splashAudio == null)
+        {
+            splashAudio = GetComponent<AudioSource>();
+        }
         puddleRenderer = GetComponent<SpriteRenderer>();
         restingScale = transform.localScale;
         restingColour = puddleRenderer != null ? puddleRenderer.color : Color.white;
@@ -61,7 +64,10 @@ public sealed class PuddleHazard : MonoBehaviour
         }
 
         occupied = true;
-        splashAudio?.Play();
+        if (splashAudio != null)
+        {
+            splashAudio.Play();
+        }
         splashRoutine = StartCoroutine(PlaySplashFeedback());
         player.ApplySlow(speedMultiplier, slowDuration);
         PlayerEntered?.Invoke(this, player);
