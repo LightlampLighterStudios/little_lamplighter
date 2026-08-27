@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
@@ -8,6 +9,8 @@ public sealed class DarknessController : MonoBehaviour
     [SerializeField, Min(0f)] private float advanceSpeed = 0.35f;
     [SerializeField, Min(0f)] private float pushBackDistance = 5f;
     [SerializeField] private float resetX = -31f;
+    [SerializeField, Min(0f)] private float tutorialCaptureDistance = 7f;
+    [SerializeField, Min(0f)] private float tutorialCaptureOverlap = 8f;
 
     private bool activeThreat;
     private bool contactLocked;
@@ -70,6 +73,83 @@ public sealed class DarknessController : MonoBehaviour
     {
         transform.position = position;
         contactLocked = false;
+    }
+
+    public Vector3 GetPositionWithFrontAt(float frontX)
+    {
+        Vector3 position = transform.position;
+        position.x = frontX - GetVisibleFrontOffsetX();
+        return position;
+    }
+
+    public IEnumerator CaptureTutorialPlayer(Transform target, float duration)
+    {
+        if (target == null)
+        {
+            yield break;
+        }
+
+        // The tutorial owns this contact so the moving trigger cannot fire early.
+        activeThreat = false;
+        contactLocked = true;
+        gameObject.SetActive(true);
+
+        float visibleFrontOffset = GetVisibleFrontOffsetX();
+        Vector3 startPosition = transform.position;
+        startPosition.x =
+            target.position.x - visibleFrontOffset - tutorialCaptureDistance;
+        Vector3 contactPosition = startPosition;
+        contactPosition.x =
+            target.position.x - visibleFrontOffset + tutorialCaptureOverlap;
+        transform.position = startPosition;
+
+        float elapsed = 0f;
+        float safeDuration = Mathf.Max(0.01f, duration);
+
+        while (elapsed < safeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float progress = Mathf.SmoothStep(
+                0f,
+                1f,
+                Mathf.Clamp01(elapsed / safeDuration));
+            transform.position = Vector3.Lerp(
+                startPosition,
+                contactPosition,
+                progress);
+            yield return null;
+        }
+
+        transform.position = contactPosition;
+        gameManager?.HandleDarknessContact();
+    }
+
+    private float GetVisibleFrontOffsetX()
+    {
+        float frontX = transform.position.x;
+
+        foreach (SpriteRenderer renderer in GetComponentsInChildren<SpriteRenderer>(true))
+        {
+            if (
+                !renderer.enabled ||
+                !renderer.gameObject.activeSelf ||
+                renderer.sprite == null)
+            {
+                continue;
+            }
+
+            Bounds spriteBounds = renderer.sprite.bounds;
+            Vector3 min = spriteBounds.min;
+            Vector3 max = spriteBounds.max;
+            frontX = Mathf.Max(
+                frontX,
+                renderer.transform.TransformPoint(new Vector3(min.x, min.y, 0f)).x,
+                renderer.transform.TransformPoint(new Vector3(min.x, max.y, 0f)).x,
+                renderer.transform.TransformPoint(new Vector3(max.x, min.y, 0f)).x,
+                renderer.transform.TransformPoint(new Vector3(max.x, max.y, 0f)).x);
+        }
+
+        return frontX - transform.position.x;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

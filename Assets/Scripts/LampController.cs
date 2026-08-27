@@ -18,6 +18,8 @@ public sealed class LampController : MonoBehaviour
     private float holdTimer;
     private SpriteRenderer spriteRenderer;
     private AudioSource audioSource;
+    private Color restingColour = Color.white;
+    private bool tutorialHighlighted;
 
     public event Action<LampController, bool> Lit;
 
@@ -31,6 +33,7 @@ public sealed class LampController : MonoBehaviour
         // this will get the SpriteRenderer so we can swap sprites when lit
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
+        restingColour = spriteRenderer != null ? spriteRenderer.color : Color.white;
         ApplySprite();
 
         // grab the AudioSource if there is one (won't crash if missing)
@@ -38,6 +41,8 @@ public sealed class LampController : MonoBehaviour
 
     private void Update()
     {
+        UpdateTutorialHighlight();
+
         if (isLit)
         {
             return;
@@ -93,6 +98,16 @@ public sealed class LampController : MonoBehaviour
         ApplySprite();
     }
 
+    public void SetTutorialHighlighted(bool highlighted)
+    {
+        tutorialHighlighted = highlighted;
+
+        if (!highlighted && spriteRenderer != null)
+        {
+            spriteRenderer.color = restingColour;
+        }
+    }
+
     public void RestoreState(bool lit, bool everLit)
     {
         // Checkpoint restoration must restore both visual state and scoring
@@ -135,6 +150,20 @@ public sealed class LampController : MonoBehaviour
         holdTimer = 0f;
         // must reset timer if player lets go or walks away (like later on when dog comes to steal tapperPole)
         GameManager.instance?.HideLoadingBar();
+    }
+
+    private void UpdateTutorialHighlight()
+    {
+        if (!tutorialHighlighted || spriteRenderer == null)
+        {
+            return;
+        }
+
+        float pulse = (Mathf.Sin(Time.unscaledTime * 5f) + 1f) * 0.5f;
+        spriteRenderer.color = Color.Lerp(
+            restingColour,
+            new Color(1f, 0.82f, 0.32f, restingColour.a),
+            pulse * 0.65f);
     }
 
     private void ApplySprite()

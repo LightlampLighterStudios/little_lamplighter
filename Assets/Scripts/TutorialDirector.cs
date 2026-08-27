@@ -10,6 +10,8 @@ public sealed class TutorialDirector : MonoBehaviour
     {
         Opening,
         NormalPlay,
+        ScriptedDarknessCapture,
+        WaitingForDarknessRecoveryLamp,
         WaitingForFirstLamp,
         WaitingForPuddleJump,
         ClearingTutorialPuddle,
@@ -52,13 +54,17 @@ public sealed class TutorialDirector : MonoBehaviour
     [SerializeField] private GameObject lampPrompt;
     [SerializeField] private GameObject jumpPrompt;
     [SerializeField] private GameObject relightPrompt;
+    [SerializeField] private Text lampPromptText;
     [SerializeField] private Image fadeOverlay;
     [SerializeField, Min(0.05f)] private float fadeDuration = 0.3f;
     [SerializeField, Min(0f)] private float splashHoldDuration = 0.35f;
+    [SerializeField, Min(0.05f)] private float darknessCaptureDuration = 0.8f;
+    [SerializeField, Min(0f)] private float darknessRecoveryDistance = 8f;
 
     private TutorialState state = TutorialState.Opening;
     private CheckpointSnapshot latestCheckpoint;
     private bool respawning;
+    private string defaultLampPromptText;
 
     private void Start()
     {
@@ -75,6 +81,7 @@ public sealed class TutorialDirector : MonoBehaviour
         lampPrompt?.SetActive(false);
         jumpPrompt?.SetActive(false);
         relightPrompt?.SetActive(false);
+        defaultLampPromptText = lampPromptText != null ? lampPromptText.text : string.Empty;
 
         if (fadeOverlay != null)
         {
@@ -165,6 +172,14 @@ public sealed class TutorialDirector : MonoBehaviour
         switch (sectionType)
         {
             case TutorialSectionType.FirstLamp:
+                if (state == TutorialState.WaitingForDarknessRecoveryLamp)
+                {
+                    gameManager.PauseWorld();
+                    SetLampPromptText("HOLD ENTER TO LIGHT - PUSH IT BACK");
+                    lampPrompt?.SetActive(true);
+                    break;
+                }
+
                 latestCheckpoint = CaptureCheckpoint();
                 state = TutorialState.WaitingForFirstLamp;
                 gameManager.PauseWorld();
@@ -215,9 +230,32 @@ public sealed class TutorialDirector : MonoBehaviour
         }
     }
 
+    public void BeginScriptedDarknessLesson(Transform recoveryCheckpoint)
+    {
+        if (
+            respawning ||
+            state != TutorialState.NormalPlay ||
+            recoveryCheckpoint == null)
+        {
+            return;
+        }
+
+        latestCheckpoint = CaptureCheckpoint();
+        latestCheckpoint.playerPosition = recoveryCheckpoint.position;
+        Vector3 recoveryDarknessPosition = darkness.GetPositionWithFrontAt(
+            recoveryCheckpoint.position.x - darknessRecoveryDistance);
+        latestCheckpoint.darknessPosition = recoveryDarknessPosition;
+        state = TutorialState.ScriptedDarknessCapture;
+        gameManager.PauseWorld();
+        player.SetControlsEnabled(false);
+        HideTutorialPrompts();
+        StartCoroutine(darkness.CaptureTutorialPlayer(player.transform, darknessCaptureDuration));
+    }
+
     public void HideAllPrompts()
     {
         state = TutorialState.Complete;
+        firstLamp?.SetTutorialHighlighted(false);
         movementPrompt?.SetActive(false);
         lampPrompt?.SetActive(false);
         jumpPrompt?.SetActive(false);
@@ -226,6 +264,15 @@ public sealed class TutorialDirector : MonoBehaviour
 
     private void HandleRespawnRequested()
     {
+        if (state == TutorialState.ScriptedDarknessCapture)
+        {
+            StartCoroutine(RestoreCheckpointRoutine(
+                false,
+                TutorialState.WaitingForDarknessRecoveryLamp,
+                false));
+            return;
+        }
+
         RespawnAtLatestCheckpoint(false);
     }
 
@@ -255,9 +302,14 @@ public sealed class TutorialDirector : MonoBehaviour
 
     private void HandleLampLit(LampController lamp, bool isRelight)
     {
-        if (state == TutorialState.WaitingForFirstLamp && lamp == firstLamp)
+        if (
+            (state == TutorialState.WaitingForDarknessRecoveryLamp ||
+            state == TutorialState.WaitingForFirstLamp) &&
+            lamp == firstLamp)
         {
             lampPrompt?.SetActive(false);
+            firstLamp.SetTutorialHighlighted(false);
+            ResetLampPromptText();
             darkness.SetActiveThreat(true);
             state = TutorialState.NormalPlay;
             latestCheckpoint = CaptureCheckpoint();
@@ -290,7 +342,10 @@ public sealed class TutorialDirector : MonoBehaviour
             state == TutorialState.ClearingTutorialPuddle) &&
             !respawning)
         {
-            StartCoroutine(RestoreCheckpointRoutine(true));
+            StartCoroutine(RestoreCheckpointRoutine(
+                true,
+                TutorialState.WaitingForPuddleJump,
+                false));
         }
     }
 
@@ -317,7 +372,10 @@ public sealed class TutorialDirector : MonoBehaviour
         return snapshot;
     }
 
-    private IEnumerator RestoreCheckpointRoutine(bool restoreLives)
+    private IEnumerator RestoreCheckpointRoutine(
+        bool restoreLives,
+        TutorialState stateAfterRespawn = TutorialState.NormalPlay,
+        bool resumeWorldAfterRespawn = true)
     {
         if (latestCheckpoint == null)
         {
@@ -342,21 +400,46 @@ public sealed class TutorialDirector : MonoBehaviour
             lampState.lamp.RestoreState(lampState.isLit, lampState.hasEverBeenLit);
         }
 
-        state = restoreLives
-            ? TutorialState.WaitingForPuddleJump
-            : TutorialState.NormalPlay;
-        jumpPrompt?.SetActive(restoreLives);
-        lampPrompt?.SetActive(false);
+        state = stateAfterRespawn;
+        jumpPrompt?.SetActive(state == TutorialState.WaitingForPuddleJump);
+        lampPrompt?.SetActive(state == TutorialState.WaitingForDarknessRecoveryLamp);
         relightPrompt?.SetActive(false);
+
+        if (state == TutorialState.WaitingForDarknessRecoveryLamp)
+        {
+            firstLamp.SetTutorialHighlighted(true);
+            SetLampPromptText("HOLD ENTER TO LIGHT - PUSH IT BACK");
+        }
 
         yield return FadeTo(0f);
         player.SetControlsEnabled(true);
         respawning = false;
 
-        if (!restoreLives)
+        if (resumeWorldAfterRespawn)
         {
             gameManager.ResumeWorld();
         }
+    }
+
+    private void HideTutorialPrompts()
+    {
+        movementPrompt?.SetActive(false);
+        lampPrompt?.SetActive(false);
+        jumpPrompt?.SetActive(false);
+        relightPrompt?.SetActive(false);
+    }
+
+    private void SetLampPromptText(string message)
+    {
+        if (lampPromptText != null)
+        {
+            lampPromptText.text = message;
+        }
+    }
+
+    private void ResetLampPromptText()
+    {
+        SetLampPromptText(defaultLampPromptText);
     }
 
     private IEnumerator FadeTo(float targetAlpha)
