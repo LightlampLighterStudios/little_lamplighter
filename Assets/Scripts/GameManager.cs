@@ -337,7 +337,7 @@ public sealed class GameManager : MonoBehaviour
 
         levelComplete = true;
         worldScroller?.StopScrolling();
-        darkness?.SetActiveThreat(false);
+        darkness?.RetreatOffScreen(cam);
         hud?.HideLampProgress();
         LevelEndedEvent?.Invoke(true);
         resultsPanel?.Show(this);
