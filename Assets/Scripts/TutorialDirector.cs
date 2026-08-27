@@ -44,6 +44,7 @@ public sealed class TutorialDirector : MonoBehaviour
     [SerializeField] private PlayerController player;
     [SerializeField] private Transform tutorialRoute;
     [SerializeField] private DarknessController darkness;
+    [SerializeField] private Transform darknessRecoveryCheckpoint;
     [SerializeField] private LampController firstLamp;
     [SerializeField] private PuddleHazard tutorialPuddle;
     [SerializeField] private LampController gustLamp;
@@ -58,8 +59,10 @@ public sealed class TutorialDirector : MonoBehaviour
     [SerializeField] private Image fadeOverlay;
     [SerializeField, Min(0.05f)] private float fadeDuration = 0.3f;
     [SerializeField, Min(0f)] private float splashHoldDuration = 0.35f;
-    [SerializeField, Min(0.05f)] private float darknessCaptureDuration = 0.8f;
+    [SerializeField, Min(0f)] private float openingDarknessDelay = 0.4f;
+    [SerializeField, Min(0.05f)] private float darknessCaptureDuration = 4f;
     [SerializeField, Min(0f)] private float darknessRecoveryDistance = 8f;
+    [SerializeField, Min(0f)] private float recoveryLampHorizontalOffset = 1.5f;
 
     private TutorialState state = TutorialState.Opening;
     private CheckpointSnapshot latestCheckpoint;
@@ -158,8 +161,12 @@ public sealed class TutorialDirector : MonoBehaviour
     public void NotifyLevelStarted()
     {
         movementPrompt?.SetActive(false);
-        state = TutorialState.NormalPlay;
-        latestCheckpoint = CaptureCheckpoint();
+
+        if (state == TutorialState.Opening)
+        {
+            state = TutorialState.NormalPlay;
+            latestCheckpoint = CaptureCheckpoint();
+        }
     }
 
     public void EnterSection(TutorialSectionType sectionType)
@@ -240,16 +247,8 @@ public sealed class TutorialDirector : MonoBehaviour
             return;
         }
 
-        latestCheckpoint = CaptureCheckpoint();
-        latestCheckpoint.playerPosition = recoveryCheckpoint.position;
-        Vector3 recoveryDarknessPosition = darkness.GetPositionWithFrontAt(
-            recoveryCheckpoint.position.x - darknessRecoveryDistance);
-        latestCheckpoint.darknessPosition = recoveryDarknessPosition;
-        state = TutorialState.ScriptedDarknessCapture;
-        gameManager.PauseWorld();
-        player.SetControlsEnabled(false);
-        HideTutorialPrompts();
-        StartCoroutine(darkness.CaptureTutorialPlayer(player.transform, darknessCaptureDuration));
+        PrepareDarknessLesson();
+        StartCoroutine(RunOpeningDarknessChase(0f));
     }
 
     public void HideAllPrompts()
@@ -266,6 +265,7 @@ public sealed class TutorialDirector : MonoBehaviour
     {
         if (state == TutorialState.ScriptedDarknessCapture)
         {
+            UpdateDarknessRecoveryCheckpoint();
             StartCoroutine(RestoreCheckpointRoutine(
                 false,
                 TutorialState.WaitingForDarknessRecoveryLamp,
@@ -285,8 +285,61 @@ public sealed class TutorialDirector : MonoBehaviour
     {
         if (state == TutorialState.Opening)
         {
+            if (darknessRecoveryCheckpoint == null)
+            {
+                gameManager.BeginLevel();
+                return;
+            }
+
+            PrepareDarknessLesson();
             gameManager.BeginLevel();
+            StartCoroutine(RunOpeningDarknessChase(openingDarknessDelay));
         }
+    }
+
+    private void PrepareDarknessLesson()
+    {
+        latestCheckpoint = CaptureCheckpoint();
+        latestCheckpoint.darknessPosition = darkness.GetPositionWithFrontAt(
+            player.transform.position.x - darknessRecoveryDistance);
+        state = TutorialState.ScriptedDarknessCapture;
+        HideTutorialPrompts();
+    }
+
+    private void UpdateDarknessRecoveryCheckpoint()
+    {
+        if (latestCheckpoint == null)
+        {
+            return;
+        }
+
+        Vector3 capturedPlayerPosition = player.transform.position;
+        latestCheckpoint.playerPosition = capturedPlayerPosition;
+
+        Vector3 recoveryRoutePosition = tutorialRoute.position;
+        recoveryRoutePosition.x +=
+            capturedPlayerPosition.x + recoveryLampHorizontalOffset -
+            firstLamp.transform.position.x;
+        latestCheckpoint.routePosition = recoveryRoutePosition;
+        latestCheckpoint.darknessPosition = darkness.GetPositionWithFrontAt(
+            capturedPlayerPosition.x - darknessRecoveryDistance);
+    }
+
+    private IEnumerator RunOpeningDarknessChase(float delay)
+    {
+        if (delay > 0f)
+        {
+            yield return new WaitForSeconds(delay);
+        }
+
+        if (respawning || state != TutorialState.ScriptedDarknessCapture)
+        {
+            yield break;
+        }
+
+        yield return darkness.CaptureTutorialPlayer(
+            player.transform,
+            darknessCaptureDuration);
     }
 
     private void HandleJump()

@@ -9,8 +9,8 @@ public sealed class DarknessController : MonoBehaviour
     [SerializeField, Min(0f)] private float advanceSpeed = 0.35f;
     [SerializeField, Min(0f)] private float pushBackDistance = 5f;
     [SerializeField] private float resetX = -31f;
-    [SerializeField, Min(0f)] private float tutorialCaptureDistance = 7f;
-    [SerializeField, Min(0f)] private float tutorialCaptureOverlap = 8f;
+    [SerializeField, Min(0f)] private float tutorialCaptureDistance = 14f;
+    [SerializeField, Min(0f)] private float tutorialCaptureOverlap = 20f;
 
     private bool activeThreat;
     private bool contactLocked;
@@ -109,6 +109,8 @@ public sealed class DarknessController : MonoBehaviour
         while (elapsed < safeDuration)
         {
             elapsed += Time.unscaledDeltaTime;
+            contactPosition.x =
+                target.position.x - visibleFrontOffset + tutorialCaptureOverlap;
             float progress = Mathf.SmoothStep(
                 0f,
                 1f,
@@ -120,6 +122,8 @@ public sealed class DarknessController : MonoBehaviour
             yield return null;
         }
 
+        contactPosition.x =
+            target.position.x - visibleFrontOffset + tutorialCaptureOverlap;
         transform.position = contactPosition;
         gameManager?.HandleDarknessContact();
     }
