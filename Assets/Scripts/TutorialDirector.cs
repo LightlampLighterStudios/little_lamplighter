@@ -182,7 +182,7 @@ public sealed class TutorialDirector : MonoBehaviour
                 if (state == TutorialState.WaitingForDarknessRecoveryLamp)
                 {
                     gameManager.PauseWorld();
-                    SetLampPromptText("HOLD ENTER TO LIGHT - PUSH IT BACK");
+                    ResetLampPromptText();
                     lampPrompt?.SetActive(true);
                     break;
                 }
@@ -210,8 +210,18 @@ public sealed class TutorialDirector : MonoBehaviour
                 break;
 
             case TutorialSectionType.GustLamp:
+                if (gustLamp.IsLit)
+                {
+                    state = TutorialState.NormalPlay;
+                    lampPrompt?.SetActive(false);
+                    latestCheckpoint = CaptureCheckpoint();
+                    gameManager.ResumeWorld();
+                    break;
+                }
+
                 state = TutorialState.WaitingForGustLamp;
                 gameManager.PauseWorld();
+                ResetLampPromptText();
                 lampPrompt?.SetActive(true);
                 break;
         }
@@ -226,6 +236,7 @@ public sealed class TutorialDirector : MonoBehaviour
 
         state = TutorialState.WaitingForRelight;
         gameManager.PauseWorld();
+        lampPrompt?.SetActive(false);
         relightPrompt?.SetActive(true);
     }
 
@@ -461,7 +472,7 @@ public sealed class TutorialDirector : MonoBehaviour
         if (state == TutorialState.WaitingForDarknessRecoveryLamp)
         {
             firstLamp.SetTutorialHighlighted(true);
-            SetLampPromptText("HOLD ENTER TO LIGHT - PUSH IT BACK");
+            ResetLampPromptText();
         }
 
         yield return FadeTo(0f);
