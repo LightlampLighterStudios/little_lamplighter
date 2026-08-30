@@ -26,6 +26,7 @@ public sealed class GameManager : MonoBehaviour
     [SerializeField, Min(1f)] private float nightLength = 90f;
     [SerializeField] private WorldScroller worldScroller;
     [SerializeField] private DarknessController darkness;
+    [SerializeField] private bool activateDarknessOnLevelStart;
     [SerializeField] private GameHudController hud;
     [SerializeField] private ResultsPanel resultsPanel;
     [SerializeField] private bool canLoseFinalLife;
@@ -187,6 +188,11 @@ public sealed class GameManager : MonoBehaviour
         }
 
         levelStarted = true;
+        if (activateDarknessOnLevelStart)
+        {
+            darkness?.SetActiveThreat(true);
+        }
+
         worldScroller?.StartScrolling();
         LevelStartedEvent?.Invoke();
     }
@@ -270,7 +276,14 @@ public sealed class GameManager : MonoBehaviour
             return;
         }
 
-        RespawnRequestedEvent?.Invoke();
+        if (RespawnRequestedEvent != null)
+        {
+            RespawnRequestedEvent.Invoke();
+        }
+        else
+        {
+            darkness?.ResetThreat();
+        }
     }
 
     public ProgressSnapshot CaptureProgress()

@@ -293,7 +293,7 @@ SpriteRenderer:
   m_SortingLayer: -3
   m_SortingOrder: 30
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 145aa8ab2a489f84c86da5f9b3a2eed2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4684f0703bdce574ebd7211aaeb9b365, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.8627451}
   m_FlipX: 0
   m_FlipY: 0
@@ -882,7 +882,7 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 34
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 10
     m_MaxSize: 40
     m_Alignment: 4
@@ -891,7 +891,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u2190   MOVE   \u2192"
+  m_Text: '  Move using the Arrow Keys ->'
 --- !u!222 &312337983
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1181,7 +1181,7 @@ SpriteRenderer:
   m_SortingLayer: -3
   m_SortingOrder: 29
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 145aa8ab2a489f84c86da5f9b3a2eed2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4684f0703bdce574ebd7211aaeb9b365, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.7}
   m_FlipX: 0
   m_FlipY: 0
@@ -1272,7 +1272,7 @@ SpriteRenderer:
   m_SortingLayer: -3
   m_SortingOrder: 34
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 145aa8ab2a489f84c86da5f9b3a2eed2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4684f0703bdce574ebd7211aaeb9b365, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.78}
   m_FlipX: 1
   m_FlipY: 0
@@ -1363,7 +1363,7 @@ SpriteRenderer:
   m_SortingLayer: -3
   m_SortingOrder: 29
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 145aa8ab2a489f84c86da5f9b3a2eed2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4684f0703bdce574ebd7211aaeb9b365, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.65}
   m_FlipX: 1
   m_FlipY: 0
@@ -1454,7 +1454,7 @@ SpriteRenderer:
   m_SortingLayer: -3
   m_SortingOrder: 31
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 145aa8ab2a489f84c86da5f9b3a2eed2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4684f0703bdce574ebd7211aaeb9b365, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.8627451}
   m_FlipX: 0
   m_FlipY: 0
@@ -1910,8 +1910,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuddleHazard
   tutorialPuddle: 0
-  speedMultiplier: 0.45
-  slowDuration: 1.25
+  speedMultiplier: 0.4
+  slowDuration: 2
   splashAudio: {fileID: 0}
 --- !u!82 &492291014
 AudioSource:
@@ -2105,7 +2105,7 @@ SpriteRenderer:
   m_SortingLayer: -3
   m_SortingOrder: 3
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: e87bb09f7a2d0694c9cbfa96d7d4dea5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0239419d75bd32f40b9e5d2f86287c06, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2113,7 +2113,7 @@ SpriteRenderer:
   m_Size: {x: 10, y: 10}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &518083714
 GameObject:
@@ -2163,7 +2163,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: fe309c3ac6729417b836f83a62070517, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -2705,6 +2705,7 @@ MonoBehaviour:
   continueButton: {fileID: 1024559273}
   levelSelectButton: {fileID: 1768530239}
   player: {fileID: 445935891}
+  levelOneDemoOnly: 0
   continueScene: Elliot_Level2
   levelSelectScene: TemporaryLevelSelect
   runOffDuration: 1.1
@@ -3472,7 +3473,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: a21d634ecc921419a91b4c70f112084a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -4005,7 +4006,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: fe309c3ac6729417b836f83a62070517, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -4427,7 +4428,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: a21d634ecc921419a91b4c70f112084a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -4834,7 +4835,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: a21d634ecc921419a91b4c70f112084a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -6270,8 +6271,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuddleHazard
   tutorialPuddle: 0
-  speedMultiplier: 0.45
-  slowDuration: 1.25
+  speedMultiplier: 0.4
+  slowDuration: 2
   splashAudio: {fileID: 0}
 --- !u!82 &1819614369
 AudioSource:
@@ -6465,7 +6466,7 @@ SpriteRenderer:
   m_SortingLayer: -3
   m_SortingOrder: 3
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: eae49ddb246b1194dbcdfcc5ce2fb605, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5f16801c612afac4e8d43c9f8287ef4d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -6473,7 +6474,7 @@ SpriteRenderer:
   m_Size: {x: 10, y: 10}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1827873155
 GameObject:
@@ -6899,7 +6900,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: fe309c3ac6729417b836f83a62070517, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -7251,8 +7252,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuddleHazard
   tutorialPuddle: 1
-  speedMultiplier: 0.45
-  slowDuration: 1.25
+  speedMultiplier: 0.4
+  slowDuration: 2
   splashAudio: {fileID: 0}
 --- !u!82 &2141892973
 AudioSource:
@@ -7446,7 +7447,7 @@ SpriteRenderer:
   m_SortingLayer: -3
   m_SortingOrder: 3
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -1400332605574630612, guid: 22b1943d28b2ea740b355d34ea8738be,
+  m_Sprite: {fileID: 21300000, guid: 16bf07edc93b7d44580b3c0c62ef1b54,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -7455,7 +7456,7 @@ SpriteRenderer:
   m_Size: {x: 10, y: 10}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!4 &2141892976
 Transform:

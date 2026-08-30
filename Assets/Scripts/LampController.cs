@@ -23,7 +23,7 @@ public sealed class LampController : MonoBehaviour
 
     public event Action<LampController, bool> Lit;
 
-    public string LampId => string.IsNullOrWhiteSpace(lampId) ? name : lampId;
+    public string LampId => ResolveLampId();
     public bool IsLit => isLit;
     public bool HasEverBeenLit => hasEverBeenLit;
     public float LightingProgress => Mathf.Clamp01(holdTimer / Mathf.Max(0.01f, timeToLight));
@@ -177,6 +177,26 @@ public sealed class LampController : MonoBehaviour
         {
             spriteRenderer.sprite = isLit ? litSprite : unlitSprite;
         }
+    }
+
+    private string ResolveLampId()
+    {
+        if (!string.IsNullOrWhiteSpace(lampId) &&
+            !string.Equals(lampId, "Lamp", StringComparison.OrdinalIgnoreCase))
+        {
+            return lampId;
+        }
+
+        Transform current = transform;
+        string hierarchyPath = current.GetSiblingIndex().ToString();
+
+        while (current.parent != null)
+        {
+            current = current.parent;
+            hierarchyPath = current.GetSiblingIndex() + "/" + hierarchyPath;
+        }
+
+        return gameObject.scene.name + ":" + hierarchyPath;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

@@ -97,6 +97,44 @@ public sealed class ScrollingLayer : MonoBehaviour
         ArrangeTiles();
     }
 
+    public Vector3[] CaptureCheckpointPositions()
+    {
+        if (tiles == null)
+        {
+            return new Vector3[0];
+        }
+
+        Vector3[] positions = new Vector3[tiles.Length];
+
+        for (int index = 0; index < tiles.Length; index++)
+        {
+            if (tiles[index] != null)
+            {
+                positions[index] = tiles[index].transform.position;
+            }
+        }
+
+        return positions;
+    }
+
+    public void RestoreCheckpointPositions(Vector3[] positions)
+    {
+        if (tiles == null || positions == null)
+        {
+            return;
+        }
+
+        int count = Mathf.Min(tiles.Length, positions.Length);
+
+        for (int index = 0; index < count; index++)
+        {
+            if (tiles[index] != null)
+            {
+                tiles[index].transform.position = positions[index];
+            }
+        }
+    }
+
     private bool HasValidSetup()
     {
         // The system requires an orthographic camera aligned with world X.
