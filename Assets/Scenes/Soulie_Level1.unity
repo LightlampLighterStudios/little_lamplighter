@@ -2705,7 +2705,7 @@ MonoBehaviour:
   continueButton: {fileID: 1024559273}
   levelSelectButton: {fileID: 1768530239}
   player: {fileID: 445935891}
-  levelOneDemoOnly: 1
+  levelOneDemoOnly: 0
   continueScene: Elliot_Level2
   levelSelectScene: TemporaryLevelSelect
   runOffDuration: 1.1

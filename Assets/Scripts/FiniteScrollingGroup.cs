@@ -51,4 +51,14 @@ public sealed class FiniteScrollingGroup : MonoBehaviour
         // Restore the position from before scrolling began.
         transform.position = initialPosition;
     }
+
+    public Vector3 CaptureCheckpointPosition()
+    {
+        return transform.position;
+    }
+
+    public void RestoreCheckpointPosition(Vector3 position)
+    {
+        transform.position = position;
+    }
 }

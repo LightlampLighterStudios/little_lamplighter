@@ -93,7 +93,8 @@ public sealed class ResultsPanel : MonoBehaviour
             titleText.text = "LEVEL COMPLETE";
         }
 
-        continueButton?.gameObject.SetActive(!levelOneDemoOnly);
+        continueButton?.gameObject.SetActive(
+            !levelOneDemoOnly && !string.IsNullOrWhiteSpace(continueScene));
         levelSelectButton?.gameObject.SetActive(!levelOneDemoOnly);
 
         if (player != null)

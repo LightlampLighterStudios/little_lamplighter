@@ -3,6 +3,12 @@ using UnityEngine;
 
 public sealed class WorldScroller : MonoBehaviour
 {
+    public sealed class CheckpointSnapshot
+    {
+        public Vector3[][] layerPositions;
+        public Vector3[] finiteGroupPositions;
+    }
+
     // Controls the shared movement speed of the world.
     // Individual layers multiply this value to create parallax depth.
     [Header("World Settings")]
@@ -217,6 +223,59 @@ public sealed class WorldScroller : MonoBehaviour
     public void StopScrolling()
     {
         isScrolling = false;
+    }
+
+    public CheckpointSnapshot CaptureCheckpoint()
+    {
+        CheckpointSnapshot snapshot = new CheckpointSnapshot
+        {
+            layerPositions = new Vector3[activeLayers.Count][],
+            finiteGroupPositions = new Vector3[activeFiniteGroups.Count]
+        };
+
+        for (int index = 0; index < activeLayers.Count; index++)
+        {
+            snapshot.layerPositions[index] =
+                activeLayers[index].CaptureCheckpointPositions();
+        }
+
+        for (int index = 0; index < activeFiniteGroups.Count; index++)
+        {
+            snapshot.finiteGroupPositions[index] =
+                activeFiniteGroups[index].CaptureCheckpointPosition();
+        }
+
+        return snapshot;
+    }
+
+    public void RestoreCheckpoint(CheckpointSnapshot snapshot)
+    {
+        if (snapshot == null)
+        {
+            return;
+        }
+
+        StopScrolling();
+
+        int layerCount = Mathf.Min(
+            activeLayers.Count,
+            snapshot.layerPositions.Length);
+
+        for (int index = 0; index < layerCount; index++)
+        {
+            activeLayers[index].RestoreCheckpointPositions(
+                snapshot.layerPositions[index]);
+        }
+
+        int groupCount = Mathf.Min(
+            activeFiniteGroups.Count,
+            snapshot.finiteGroupPositions.Length);
+
+        for (int index = 0; index < groupCount; index++)
+        {
+            activeFiniteGroups[index].RestoreCheckpointPosition(
+                snapshot.finiteGroupPositions[index]);
+        }
     }
 
     // Returns every registered layer to its starting arrangement.

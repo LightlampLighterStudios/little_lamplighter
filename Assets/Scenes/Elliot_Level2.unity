@@ -284,7 +284,7 @@ MonoBehaviour:
   levelSelectButton: {fileID: 1400787000}
   player: {fileID: 445935891}
   levelOneDemoOnly: 0
-  continueScene: Soulie_Level3
+  continueScene: 
   levelSelectScene: TemporaryLevelSelect
   runOffDuration: 1.1
   runOffSpeed: 12
@@ -1687,7 +1687,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 963380162}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &460058180
@@ -1723,14 +1723,22 @@ MonoBehaviour:
   m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: 5988ef718135e9a4583318eb0d6cfd7a,
     type: 3}
-  m_PointAction: {fileID: 0}
-  m_MoveAction: {fileID: 0}
-  m_SubmitAction: {fileID: 0}
-  m_CancelAction: {fileID: 0}
-  m_LeftClickAction: {fileID: 0}
-  m_MiddleClickAction: {fileID: 0}
-  m_RightClickAction: {fileID: 0}
-  m_ScrollWheelAction: {fileID: 0}
+  m_PointAction: {fileID: -1654692200621890270, guid: 5988ef718135e9a4583318eb0d6cfd7a,
+    type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: 5988ef718135e9a4583318eb0d6cfd7a,
+    type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: 5988ef718135e9a4583318eb0d6cfd7a,
+    type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: 5988ef718135e9a4583318eb0d6cfd7a,
+    type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: 5988ef718135e9a4583318eb0d6cfd7a,
+    type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: 5988ef718135e9a4583318eb0d6cfd7a,
+    type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: 5988ef718135e9a4583318eb0d6cfd7a,
+    type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: 5988ef718135e9a4583318eb0d6cfd7a,
+    type: 3}
   m_TrackedDevicePositionAction: {fileID: 0}
   m_TrackedDeviceOrientationAction: {fileID: 0}
   m_DeselectOnBackgroundClick: 1
@@ -4175,8 +4183,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DarknessController
   player: {fileID: 445935889}
   gameManager: {fileID: 1604115131}
-  advanceSpeed: 3
-  pushBackDistance: 5
+  advanceSpeed: 2
+  pushBackDistance: 15
   resetX: -53
   tutorialCaptureDistance: 14
   tutorialCaptureOverlap: 20
@@ -4744,9 +4752,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 7
+  m_SortingLayerID: 1050421433
+  m_SortingLayer: -3
+  m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: fdfabdc8a18e645bba74ce0605b9ed0a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5477,6 +5485,7 @@ GameObject:
   - component: {fileID: 1604115132}
   - component: {fileID: 1604115131}
   - component: {fileID: 1604115133}
+  - component: {fileID: 2100000001}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -6714,6 +6723,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092704131}
   m_CullTransparentMesh: 0
+--- !u!114 &2100000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1604115130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 922d4494cc9441d6a0a7ae7acc61b2f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelCheckpointController
+  gameManager: {fileID: 1604115131}
+  worldScroller: {fileID: 106466130}
+  player: {fileID: 445935891}
+  darkness: {fileID: 1376796190}
+  fadeOverlay: {fileID: 1667886187}
+  fadeDuration: 0.3
+  caughtHoldDuration: 0.35
+  darknessRespawnDistance: 30
 --- !u!1 &2105128984
 GameObject:
   m_ObjectHideFlags: 0
@@ -7267,6 +7296,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2120621872465197027, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
         type: 3}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2120621872465197027, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
+        type: 3}
       propertyPath: m_SortingLayerID
       value: 1050421433
       objectReference: {fileID: 0}
@@ -7707,6 +7741,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1563902890}
+    - targetCorrespondingSourceObject: {fileID: 7390702511596673857, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2200000002}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7354941173562524415, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
         type: 3}
@@ -8044,6 +8082,98 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &2200000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2200000002}
+  - component: {fileID: 2200000003}
+  - component: {fileID: 2200000004}
+  m_Layer: 0
+  m_Name: LevelFinishTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2200000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2200000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 210, y: 9, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7579629868938918482}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &2200000003
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2200000001}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 2, y: 20}
+  m_EdgeRadius: 0
+--- !u!114 &2200000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2200000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84227ee41e4dbbe429874f987af87cf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelFinishTrigger
+  gameManager: {fileID: 1604115131}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
