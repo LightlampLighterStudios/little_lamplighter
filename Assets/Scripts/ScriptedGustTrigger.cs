@@ -7,6 +7,7 @@ public sealed class ScriptedGustTrigger : MonoBehaviour
     [SerializeField] private TutorialDirector director;
     [SerializeField] private SpriteRenderer gustVisual;
     [SerializeField] private AudioSource gustAudio;
+    private AudioClipVariations gustVariations;
     private bool triggered;
     private Collider2D triggerCollider;
 
@@ -16,6 +17,7 @@ public sealed class ScriptedGustTrigger : MonoBehaviour
     {
         triggerCollider = GetComponent<Collider2D>();
         triggerCollider.isTrigger = true;
+        gustVariations = GetComponent<AudioClipVariations>();
 
         if (gustVisual != null)
         {
@@ -61,7 +63,11 @@ public sealed class ScriptedGustTrigger : MonoBehaviour
 
         triggered = true;
         triggerCollider.enabled = false;
-        if (gustAudio != null)
+        if (gustVariations != null)
+        {
+            gustVariations.PlayRandom();
+        }
+        else if (gustAudio != null)
         {
             gustAudio.Play();
         }

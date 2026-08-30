@@ -18,6 +18,7 @@ public sealed class LampController : MonoBehaviour
     private float holdTimer;
     private SpriteRenderer spriteRenderer;
     private AudioSource audioSource;
+    private AudioClipVariations audioVariations;
     private Color restingColour = Color.white;
     private bool tutorialHighlighted;
 
@@ -33,6 +34,7 @@ public sealed class LampController : MonoBehaviour
         // this will get the SpriteRenderer so we can swap sprites when lit
         spriteRenderer = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
+        audioVariations = GetComponent<AudioClipVariations>();
         restingColour = spriteRenderer != null ? spriteRenderer.color : Color.white;
         ApplySprite();
 
@@ -130,7 +132,11 @@ public sealed class LampController : MonoBehaviour
         GameManager.instance?.HideLoadingBar();
 
         // play the lighting sound, only if one is attached
-        if (audioSource != null)
+        if (audioVariations != null)
+        {
+            audioVariations.PlayRandom();
+        }
+        else if (audioSource != null)
         {
             audioSource.Play();
         }
