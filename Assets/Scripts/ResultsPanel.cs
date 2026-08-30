@@ -13,6 +13,7 @@ public sealed class ResultsPanel : MonoBehaviour
     [SerializeField] private Button continueButton;
     [SerializeField] private Button levelSelectButton;
     [SerializeField] private PlayerController player;
+    [SerializeField] private bool levelOneDemoOnly;
     [SerializeField] private string continueScene = "Elliot_Level2";
     [SerializeField] private string levelSelectScene = "TemporaryLevelSelect";
     [SerializeField, Min(0f)] private float runOffDuration = 1.1f;
@@ -81,6 +82,7 @@ public sealed class ResultsPanel : MonoBehaviour
         }
 
         continueButton?.gameObject.SetActive(false);
+        levelSelectButton?.gameObject.SetActive(!levelOneDemoOnly);
         panel?.SetActive(true);
     }
 
@@ -91,7 +93,8 @@ public sealed class ResultsPanel : MonoBehaviour
             titleText.text = "LEVEL COMPLETE";
         }
 
-        continueButton?.gameObject.SetActive(true);
+        continueButton?.gameObject.SetActive(!levelOneDemoOnly);
+        levelSelectButton?.gameObject.SetActive(!levelOneDemoOnly);
 
         if (player != null)
         {
