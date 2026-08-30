@@ -6,8 +6,8 @@ using UnityEngine;
 public sealed class PuddleHazard : MonoBehaviour
 {
     [SerializeField] private bool tutorialPuddle;
-    [SerializeField, Range(0.05f, 1f)] private float speedMultiplier = 0.45f;
-    [SerializeField, Min(0f)] private float slowDuration = 1.25f;
+    [SerializeField, Range(0.05f, 1f)] private float speedMultiplier = 0.4f;
+    [SerializeField, Min(0f)] private float slowDuration = 2f;
     [SerializeField] private AudioSource splashAudio;
 
     private bool occupied;

@@ -1910,8 +1910,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuddleHazard
   tutorialPuddle: 0
-  speedMultiplier: 0.45
-  slowDuration: 1.25
+  speedMultiplier: 0.4
+  slowDuration: 2
   splashAudio: {fileID: 0}
 --- !u!82 &492291014
 AudioSource:
@@ -6271,8 +6271,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuddleHazard
   tutorialPuddle: 0
-  speedMultiplier: 0.45
-  slowDuration: 1.25
+  speedMultiplier: 0.4
+  slowDuration: 2
   splashAudio: {fileID: 0}
 --- !u!82 &1819614369
 AudioSource:
@@ -7252,8 +7252,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuddleHazard
   tutorialPuddle: 1
-  speedMultiplier: 0.45
-  slowDuration: 1.25
+  speedMultiplier: 0.4
+  slowDuration: 2
   splashAudio: {fileID: 0}
 --- !u!82 &2141892973
 AudioSource:
