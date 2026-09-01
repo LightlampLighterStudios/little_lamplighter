@@ -10,6 +10,7 @@ public sealed class PuddleHazard : MonoBehaviour
     [SerializeField, Min(0f)] private float slowDuration = 2f;
     [SerializeField] private AudioSource splashAudio;
 
+    private AudioClipVariations splashVariations;
     private bool occupied;
     private SpriteRenderer puddleRenderer;
     private Coroutine splashRoutine;
@@ -26,6 +27,7 @@ public sealed class PuddleHazard : MonoBehaviour
         {
             splashAudio = GetComponent<AudioSource>();
         }
+        splashVariations = GetComponent<AudioClipVariations>();
         puddleRenderer = GetComponent<SpriteRenderer>();
         restingScale = transform.localScale;
         restingColour = puddleRenderer != null ? puddleRenderer.color : Color.white;
@@ -64,7 +66,11 @@ public sealed class PuddleHazard : MonoBehaviour
         }
 
         occupied = true;
-        if (splashAudio != null)
+        if (splashVariations != null)
+        {
+            splashVariations.PlayRandom();
+        }
+        else if (splashAudio != null)
         {
             splashAudio.Play();
         }
