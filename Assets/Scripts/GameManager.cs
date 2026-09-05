@@ -221,9 +221,9 @@ public sealed class GameManager : MonoBehaviour
         }
 
         uniqueLampIds.Add(lamp.LampId);
-        sparks++;
+        sparks += lamp.GetSparkReward(isRelight);
         hud?.SetSparks(sparks);
-        darkness?.PushBack();
+        darkness?.PushBack(lamp.DarknessPushMultiplier);
         SparksChanged?.Invoke(sparks);
         LampLitEvent?.Invoke(lamp, isRelight);
     }
