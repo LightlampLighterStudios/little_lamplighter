@@ -11,6 +11,8 @@ public sealed class DarknessController : MonoBehaviour
     [SerializeField, Min(0f)] private float advanceSpeed = 0.35f;
     [SerializeField, Min(0f)] private float pushBackDistance = 5f;
     [SerializeField] private float resetX = -31f;
+    [SerializeField] private bool clampTrailingDistance;
+    [SerializeField, Min(0f)] private float maximumTrailingDistance = 24f;
     [SerializeField, Min(0f)] private float tutorialCaptureDistance = 14f;
     [SerializeField, Min(0f)] private float tutorialCaptureOverlap = 20f;
     [SerializeField, Min(0.05f)] private float retreatDuration = 0.9f;
@@ -19,6 +21,7 @@ public sealed class DarknessController : MonoBehaviour
     private bool activeThreat;
     private bool contactLocked;
     private Coroutine retreatRoutine;
+    private float trailingDistanceAllowance;
 
     public bool IsActiveThreat => activeThreat;
 
@@ -37,14 +40,30 @@ public sealed class DarknessController : MonoBehaviour
             return;
         }
 
-        transform.position += Vector3.right * advanceSpeed * Time.deltaTime;
+        float advanceDistance = advanceSpeed * Time.deltaTime;
+        transform.position += Vector3.right * advanceDistance;
+        trailingDistanceAllowance = Mathf.Max(
+            0f,
+            trailingDistanceAllowance - advanceDistance);
+        ClampTrailingDistance();
+
+        if (player == null || darkness == null)
+        {
+            return;
+        }
+
+        RawImage overlay = darkness.GetComponent<RawImage>();
+        if (overlay == null)
+        {
+            return;
+        }
 
         float distanceApart = getSqrDistance(transform.position, player.position);
 
         //Convert 0 and 200 distance range to 0f and 1f range
         float lerp = mapValue(distanceApart, 0, 200, 0f, 1f);
 
-        darkness.GetComponent<RawImage>().color = new Color(0, 0, 0, Mathf.Lerp(0.8f, 0, lerp));
+        overlay.color = new Color(0, 0, 0, Mathf.Lerp(0.8f, 0, lerp));
     }
 
     public float getSqrDistance(Vector3 v1, Vector3 v2)
@@ -68,6 +87,15 @@ public sealed class DarknessController : MonoBehaviour
     {
         activeThreat = active;
         gameObject.SetActive(active);
+
+        if (active)
+        {
+            ClampTrailingDistance();
+        }
+        else
+        {
+            trailingDistanceAllowance = 0f;
+        }
     }
 
     public void RetreatOffScreen(Camera targetCamera)
@@ -86,6 +114,11 @@ public sealed class DarknessController : MonoBehaviour
 
     public void PushBack()
     {
+        PushBack(1f);
+    }
+
+    public void PushBack(float distanceMultiplier)
+    {
         if (!activeThreat)
         {
             activeThreat = true;
@@ -93,8 +126,27 @@ public sealed class DarknessController : MonoBehaviour
         }
 
         Vector3 position = transform.position;
-        position.x = Mathf.Max(resetX, position.x - pushBackDistance);
+        position.x -= pushBackDistance * Mathf.Max(0.1f, distanceMultiplier);
         transform.position = position;
+        ExpandAllowanceToCurrentTrailingDistance();
+        ClampTrailingDistance();
+    }
+
+    public void ApplyWorldScroll(float signedWorldDistance)
+    {
+        if (Mathf.Approximately(signedWorldDistance, 0f))
+        {
+            return;
+        }
+
+        // Positive route travel moves world-anchored content left. Darkness
+        // then continues its independent advance in Update.
+        transform.position += Vector3.left * signedWorldDistance;
+
+        if (activeThreat)
+        {
+            ClampTrailingDistance();
+        }
     }
 
     public void ResetThreat()
@@ -103,12 +155,57 @@ public sealed class DarknessController : MonoBehaviour
         position.x = resetX;
         transform.position = position;
         contactLocked = false;
+        trailingDistanceAllowance = 0f;
     }
 
     public void RestorePosition(Vector3 position)
     {
         transform.position = position;
         contactLocked = false;
+        trailingDistanceAllowance = 0f;
+
+        if (activeThreat)
+        {
+            ExpandAllowanceToCurrentTrailingDistance();
+            ClampTrailingDistance();
+        }
+    }
+
+    public void RestoreJustOffScreen(
+        Camera targetCamera,
+        float margin = 1f)
+    {
+        float visibleFrontOffset = GetVisibleFrontOffsetX();
+        float targetFrontX;
+
+        if (targetCamera != null)
+        {
+            float cameraDistance = Mathf.Abs(
+                targetCamera.transform.position.z - transform.position.z);
+            float leftEdge = targetCamera.ViewportToWorldPoint(
+                new Vector3(0f, 0.5f, cameraDistance)).x;
+            targetFrontX = leftEdge - Mathf.Max(0f, margin);
+        }
+        else if (player != null)
+        {
+            targetFrontX = player.position.x - maximumTrailingDistance;
+        }
+        else
+        {
+            ResetThreat();
+            return;
+        }
+
+        Vector3 position = transform.position;
+        position.x = targetFrontX - visibleFrontOffset;
+        transform.position = position;
+        contactLocked = false;
+        trailingDistanceAllowance = 0f;
+
+        if (activeThreat)
+        {
+            ClampTrailingDistance();
+        }
     }
 
     public Vector3 GetPositionWithFrontAt(float frontX)
@@ -225,6 +322,53 @@ public sealed class DarknessController : MonoBehaviour
         }
 
         return frontX - transform.position.x;
+    }
+
+    private void ClampTrailingDistance()
+    {
+        if (!clampTrailingDistance || player == null)
+        {
+            return;
+        }
+
+        float visibleFrontOffset = GetVisibleFrontOffsetX();
+        float visibleFrontX = transform.position.x + visibleFrontOffset;
+        float allowedTrailingDistance =
+            maximumTrailingDistance + trailingDistanceAllowance;
+        float minimumFrontX = player.position.x - allowedTrailingDistance;
+
+        if (visibleFrontX < minimumFrontX)
+        {
+            Vector3 position = transform.position;
+            position.x += minimumFrontX - visibleFrontX;
+            transform.position = position;
+            visibleFrontX = minimumFrontX;
+        }
+
+        // Keep only allowance that is represented by real separation. Walking
+        // back toward darkness cannot bank an old lamp push for later.
+        float currentTrailingDistance = player.position.x - visibleFrontX;
+        trailingDistanceAllowance = Mathf.Min(
+            trailingDistanceAllowance,
+            Mathf.Max(
+                0f,
+                currentTrailingDistance - maximumTrailingDistance));
+    }
+
+    private void ExpandAllowanceToCurrentTrailingDistance()
+    {
+        if (!clampTrailingDistance || player == null)
+        {
+            return;
+        }
+
+        float visibleFrontX = transform.position.x + GetVisibleFrontOffsetX();
+        float currentTrailingDistance = player.position.x - visibleFrontX;
+        trailingDistanceAllowance = Mathf.Max(
+            trailingDistanceAllowance,
+            Mathf.Max(
+                0f,
+                currentTrailingDistance - maximumTrailingDistance));
     }
 
     private void OnTriggerEnter2D(Collider2D other)

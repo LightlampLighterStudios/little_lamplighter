@@ -1,6 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum WorldScrollMode
+{
+    Automatic,
+    PlayerFollow
+}
+
 public sealed class WorldScroller : MonoBehaviour
 {
     public sealed class CheckpointSnapshot
@@ -12,7 +18,11 @@ public sealed class WorldScroller : MonoBehaviour
     // Controls the shared movement speed of the world.
     // Individual layers multiply this value to create parallax depth.
     [Header("World Settings")]
+    [SerializeField] private WorldScrollMode scrollMode = WorldScrollMode.Automatic;
     [SerializeField, Min(0f)] private float scrollSpeed = 2f;
+    [SerializeField] private Transform followTarget;
+    [SerializeField, Min(0f)] private float followDeadZoneHalfWidth = 3f;
+    [SerializeField] private DarknessController playerFollowDarkness;
 
     // References used to initialize each scrolling layer.
     [Header("References")]
@@ -32,11 +42,14 @@ public sealed class WorldScroller : MonoBehaviour
 
     // The world starts stopped so the tutorial can control when scrolling begins.
     private bool isScrolling;
+    private Rigidbody2D followBody;
+    private float followCenterX;
 
     public bool IsScrolling => isScrolling;
+    public bool IsPlayerDriven => scrollMode == WorldScrollMode.PlayerFollow;
 
     public float CurrentScrollSpeed =>
-    isScrolling ? scrollSpeed : 0f;
+        isScrolling && !IsPlayerDriven ? scrollSpeed : 0f;
 
     public void Configure(
         Camera cameraToUse,
@@ -48,6 +61,21 @@ public sealed class WorldScroller : MonoBehaviour
         layers = scrollingLayers;
         finiteGroups = scrollingGroups;
         scrollSpeed = Mathf.Max(0f, speed);
+    }
+
+    public void ConfigurePlayerFollow(
+        Transform target,
+        float deadZoneHalfWidth = 3f)
+    {
+        scrollMode = WorldScrollMode.PlayerFollow;
+        followTarget = target;
+        followDeadZoneHalfWidth = Mathf.Max(0f, deadZoneHalfWidth);
+
+        if (followTarget != null)
+        {
+            followCenterX = followTarget.position.x;
+            followBody = followTarget.GetComponent<Rigidbody2D>();
+        }
     }
 
     private void Start()
@@ -68,6 +96,27 @@ public sealed class WorldScroller : MonoBehaviour
 
             enabled = false;
             return;
+        }
+
+        if (IsPlayerDriven)
+        {
+            if (followTarget == null)
+            {
+                PlayerController player = FindFirstObjectByType<PlayerController>();
+                followTarget = player != null ? player.transform : null;
+            }
+
+            if (followTarget == null)
+            {
+                Debug.LogError(
+                    "WorldScroller requires a follow target in PlayerFollow mode.",
+                    this);
+                enabled = false;
+                return;
+            }
+
+            followCenterX = followTarget.position.x;
+            followBody = followTarget.GetComponent<Rigidbody2D>();
         }
 
         // Require at least one looping layer or finite group.
@@ -194,22 +243,78 @@ public sealed class WorldScroller : MonoBehaviour
             return;
         }
 
-        // Calculate the shared movement distance for this frame.
-        float distance =
-            scrollSpeed * Time.deltaTime;
+        if (IsPlayerDriven)
+        {
+            return;
+        }
+
+        ScrollWorld(scrollSpeed * Time.deltaTime);
+    }
+
+    private void LateUpdate()
+    {
+        if (!isScrolling || !IsPlayerDriven || followTarget == null)
+        {
+            return;
+        }
+
+        float leftBoundary = followCenterX - followDeadZoneHalfWidth;
+        float rightBoundary = followCenterX + followDeadZoneHalfWidth;
+        // Read and write the same authoritative position source. A Rigidbody2D
+        // can update on a different cadence from rendered Transforms, so mixing
+        // the two can consume the same dead-zone overflow more than once.
+        float currentX = followBody != null
+            ? followBody.position.x
+            : followTarget.position.x;
+        float clampedX = Mathf.Clamp(currentX, leftBoundary, rightBoundary);
+        float overflow = currentX - clampedX;
+
+        if (Mathf.Approximately(overflow, 0f))
+        {
+            return;
+        }
+
+        if (followBody != null)
+        {
+            followBody.position = new Vector2(clampedX, followBody.position.y);
+        }
+        else
+        {
+            Vector3 position = followTarget.position;
+            position.x = clampedX;
+            followTarget.position = position;
+        }
+
+        ScrollWorld(overflow);
+    }
+
+    private void ScrollWorld(float signedDistance)
+    {
+        if (Mathf.Approximately(signedDistance, 0f))
+        {
+            return;
+        }
 
         // Send the same world distance to every looping layer.
         // Each layer applies its own speed multiplier.
         foreach (ScrollingLayer layer in activeLayers)
         {
-            layer.Scroll(distance);
+            layer.Scroll(signedDistance);
         }
 
         // Send the same world distance to every finite group.
         // Finite groups move away and are not recycled.
         foreach (FiniteScrollingGroup group in activeFiniteGroups)
         {
-            group.Scroll(distance);
+            group.Scroll(signedDistance);
+        }
+
+        // Darkness has its own forward advance, but it still occupies a place
+        // in the level. Move it with player-driven route travel so the player
+        // can create distance by moving forward and lose distance by returning.
+        if (IsPlayerDriven)
+        {
+            playerFollowDarkness?.ApplyWorldScroll(signedDistance);
         }
     }
 
