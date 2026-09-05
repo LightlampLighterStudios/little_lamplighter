@@ -146,7 +146,10 @@ public sealed class LampController : MonoBehaviour
 
         isLit = false;
         holdTimer = 0f;
-        extinguishEffect.Play();
+        if (extinguishEffect != null)
+        {
+            extinguishEffect.Play();
+        }
         ApplySprite();
     }
 
@@ -179,7 +182,10 @@ public sealed class LampController : MonoBehaviour
         hasEverBeenLit = true;
         holdTimer = 0f;
         ApplySprite();
-        lightingEffect.Play();
+        if (lightingEffect != null)
+        {
+            lightingEffect.Play();
+        }
         GameManager.instance?.HideLoadingBar();
 
         // play the lighting sound, only if one is attached
