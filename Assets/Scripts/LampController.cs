@@ -1,13 +1,28 @@
 using System;
 using UnityEngine;
 
+public enum LampType
+{
+    Classic,
+    Scrollwork,
+    Heritage,
+    Botanical,
+    Hooded,
+    Triple,
+    Golden
+}
+
 public sealed class LampController : MonoBehaviour
 {
     [SerializeField] private string lampId = "Lamp";
+    [SerializeField] private LampType lampType = LampType.Classic;
     [SerializeField] private Sprite unlitSprite;
     [SerializeField] private Sprite litSprite;
     // This will be the time of how long the player must hold E to light this lamp will later install loading bar sp player can see
     [SerializeField, Min(0.1f)] private float timeToLight = 0.55f;
+    [SerializeField, Min(1)] private int firstLightSparkReward = 1;
+    [SerializeField, Min(1)] private int relightSparkReward = 1;
+    [SerializeField, Min(0.1f)] private float darknessPushMultiplier = 1f;
     [SerializeField] private bool isLit;
 
     // set internal state variables
@@ -25,8 +40,11 @@ public sealed class LampController : MonoBehaviour
     public event Action<LampController, bool> Lit;
 
     public string LampId => ResolveLampId();
+    public LampType Type => lampType;
     public bool IsLit => isLit;
     public bool HasEverBeenLit => hasEverBeenLit;
+    public float TimeToLight => timeToLight;
+    public float DarknessPushMultiplier => darknessPushMultiplier;
     public float LightingProgress => Mathf.Clamp01(holdTimer / Mathf.Max(0.01f, timeToLight));
 
     private void Awake()
@@ -84,6 +102,25 @@ public sealed class LampController : MonoBehaviour
         litSprite = lit;
         timeToLight = Mathf.Max(0.1f, holdDuration);
         ApplySprite();
+    }
+
+    public void ConfigureType(
+        LampType type,
+        int firstLightReward = 1,
+        int relightReward = 1,
+        float pushMultiplier = 1f)
+    {
+        lampType = type;
+        firstLightSparkReward = Mathf.Max(1, firstLightReward);
+        relightSparkReward = Mathf.Max(1, relightReward);
+        darknessPushMultiplier = Mathf.Max(0.1f, pushMultiplier);
+    }
+
+    public int GetSparkReward(bool isRelight)
+    {
+        return isRelight
+            ? Mathf.Max(1, relightSparkReward)
+            : Mathf.Max(1, firstLightSparkReward);
     }
 
     public void Extinguish()

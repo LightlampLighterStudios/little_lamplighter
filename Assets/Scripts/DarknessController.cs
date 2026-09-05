@@ -84,6 +84,11 @@ public sealed class DarknessController : MonoBehaviour
 
     public void PushBack()
     {
+        PushBack(1f);
+    }
+
+    public void PushBack(float distanceMultiplier)
+    {
         if (!activeThreat)
         {
             activeThreat = true;
@@ -91,7 +96,7 @@ public sealed class DarknessController : MonoBehaviour
         }
 
         Vector3 position = transform.position;
-        position.x -= pushBackDistance;
+        position.x -= pushBackDistance * Mathf.Max(0.1f, distanceMultiplier);
         transform.position = position;
         ExpandAllowanceToCurrentTrailingDistance();
         ClampTrailingDistance();
