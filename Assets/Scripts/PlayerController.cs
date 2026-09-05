@@ -7,6 +7,8 @@ public sealed class PlayerController : MonoBehaviour
 {
     [SerializeField] private WorldScroller worldScroller;
     [SerializeField, Min(0f)] private float backwardScrollCompensation = 1f;
+    [SerializeField, Range(0.1f, 1f)]
+    private float playerFollowSpeedMultiplier = 1f;
     [SerializeField, Min(0f)] private float moveSpeed = 5f;     // how fast he walks left/right
     [SerializeField, Min(0f)] private float jumpForce = 15f;    // how high he jumps
     // The little zone he's allowed to walk within (stops him leaving the screen)
@@ -66,9 +68,18 @@ public sealed class PlayerController : MonoBehaviour
         // LEFT / RIGHT movement with arrow keys or A/D.
         // We move by changing velocity.x so it works in the air too (for jumping sideways over puddles).
         // Input now comes from OnMove instead of Input.GetAxisRaw("Horizontal").
-        float horizontalSpeed = moveSpeed * speedMultiplier;
+        float movementModeMultiplier =
+            worldScroller != null && worldScroller.IsPlayerDriven
+                ? playerFollowSpeedMultiplier
+                : 1f;
 
-        if (moveInput < 0f && worldScroller != null)
+        float horizontalSpeed =
+            moveSpeed * movementModeMultiplier * speedMultiplier;
+
+        if (
+            moveInput < 0f &&
+            worldScroller != null &&
+            !worldScroller.IsPlayerDriven)
         {
             horizontalSpeed +=
                 worldScroller.CurrentScrollSpeed *
