@@ -12,6 +12,14 @@ public enum LampType
     Golden
 }
 
+public enum LampGameplayCategory
+{
+    Standard,
+    Damaged,
+    Power,
+    Golden
+}
+
 public sealed class LampController : MonoBehaviour
 {
     [SerializeField] private string lampId = "Lamp";
@@ -41,11 +49,13 @@ public sealed class LampController : MonoBehaviour
 
     public string LampId => ResolveLampId();
     public LampType Type => lampType;
+    public LampGameplayCategory GameplayCategory => ResolveGameplayCategory();
     public bool IsLit => isLit;
     public bool HasEverBeenLit => hasEverBeenLit;
     public float TimeToLight => timeToLight;
     public float DarknessPushMultiplier => darknessPushMultiplier;
     public float LightingProgress => Mathf.Clamp01(holdTimer / Mathf.Max(0.01f, timeToLight));
+    public Color ProgressColour => ResolveProgressColour();
 
     private void Awake()
     {
@@ -61,7 +71,7 @@ public sealed class LampController : MonoBehaviour
 
     private void Update()
     {
-        UpdateTutorialHighlight();
+        UpdateVisualFeedback();
 
         if (isLit)
         {
@@ -195,18 +205,63 @@ public sealed class LampController : MonoBehaviour
         GameManager.instance?.HideLoadingBar();
     }
 
-    private void UpdateTutorialHighlight()
+    private void UpdateVisualFeedback()
     {
-        if (!tutorialHighlighted || spriteRenderer == null)
+        if (spriteRenderer == null)
         {
             return;
         }
 
         float pulse = (Mathf.Sin(Time.unscaledTime * 5f) + 1f) * 0.5f;
-        spriteRenderer.color = Color.Lerp(
-            restingColour,
-            new Color(1f, 0.82f, 0.32f, restingColour.a),
-            pulse * 0.65f);
+
+        if (tutorialHighlighted)
+        {
+            spriteRenderer.color = Color.Lerp(
+                restingColour,
+                new Color(1f, 0.82f, 0.32f, restingColour.a),
+                pulse * 0.65f);
+            return;
+        }
+
+        if (nearbyPlayer == null || isLit || GameplayCategory == LampGameplayCategory.Standard)
+        {
+            spriteRenderer.color = restingColour;
+            return;
+        }
+
+        Color categoryColour = ProgressColour;
+        categoryColour.a = restingColour.a;
+        spriteRenderer.color = Color.Lerp(restingColour, categoryColour, 0.16f + pulse * 0.2f);
+    }
+
+    private LampGameplayCategory ResolveGameplayCategory()
+    {
+        switch (lampType)
+        {
+            case LampType.Hooded:
+                return LampGameplayCategory.Damaged;
+            case LampType.Triple:
+                return LampGameplayCategory.Power;
+            case LampType.Golden:
+                return LampGameplayCategory.Golden;
+            default:
+                return LampGameplayCategory.Standard;
+        }
+    }
+
+    private Color ResolveProgressColour()
+    {
+        switch (GameplayCategory)
+        {
+            case LampGameplayCategory.Damaged:
+                return new Color(1f, 0.42f, 0.16f, 1f);
+            case LampGameplayCategory.Power:
+                return new Color(0.38f, 0.86f, 1f, 1f);
+            case LampGameplayCategory.Golden:
+                return new Color(1f, 0.78f, 0.08f, 1f);
+            default:
+                return new Color(1f, 0.82f, 0.32f, 1f);
+        }
     }
 
     private void ApplySprite()

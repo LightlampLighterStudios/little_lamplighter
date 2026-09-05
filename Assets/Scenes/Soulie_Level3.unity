@@ -1516,9 +1516,9 @@ MonoBehaviour:
   unlitSprite: {fileID: 21300000, guid: b476e1123eaf04d3c89a394492608101, type: 3}
   litSprite: {fileID: 21300000, guid: 5e219c57f77ac44a38c6b4f495ce4c14, type: 3}
   timeToLight: 1.2
-  firstLightSparkReward: 2
+  firstLightSparkReward: 3
   relightSparkReward: 1
-  darknessPushMultiplier: 1.35
+  darknessPushMultiplier: 1.5
   isLit: 0
 --- !u!82 &518083716
 AudioSource:
@@ -1661,7 +1661,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 6, y: 12}
+  m_Size: {x: 10.5, y: 21}
   m_EdgeRadius: 0
 --- !u!212 &518083718
 SpriteRenderer:
@@ -2425,7 +2425,7 @@ MonoBehaviour:
   lampType: 0
   unlitSprite: {fileID: 21300000, guid: 9948c2911cc954cf6a1e3d95a3b512bf, type: 3}
   litSprite: {fileID: 21300000, guid: adbf9711c54514c31b5ab776b0c2bc32, type: 3}
-  timeToLight: 0.45
+  timeToLight: 0.55
   firstLightSparkReward: 1
   relightSparkReward: 1
   darknessPushMultiplier: 1
@@ -3016,7 +3016,7 @@ MonoBehaviour:
   lampType: 1
   unlitSprite: {fileID: 21300000, guid: 591b426108103465ba25ccff2cffe0c0, type: 3}
   litSprite: {fileID: 21300000, guid: 016420b0c8f3e4ce0ba259bcd1cbfc0e, type: 3}
-  timeToLight: 0.6
+  timeToLight: 0.55
   firstLightSparkReward: 1
   relightSparkReward: 1
   darknessPushMultiplier: 1
@@ -3162,7 +3162,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 6, y: 12}
+  m_Size: {x: 10.5, y: 21}
   m_EdgeRadius: 0
 --- !u!212 &1063946505
 SpriteRenderer:
@@ -3440,7 +3440,7 @@ MonoBehaviour:
   lampType: 4
   unlitSprite: {fileID: 21300000, guid: 3713c02a1d2514df9abb097d84c7458d, type: 3}
   litSprite: {fileID: 21300000, guid: 13fd97769989f4f82a374e1437cb823b, type: 3}
-  timeToLight: 1
+  timeToLight: 1.1
   firstLightSparkReward: 1
   relightSparkReward: 1
   darknessPushMultiplier: 1
@@ -3586,7 +3586,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 6, y: 12}
+  m_Size: {x: 10.5, y: 21}
   m_EdgeRadius: 0
 --- !u!212 &1208690746
 SpriteRenderer:
@@ -3838,7 +3838,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 6, y: 12}
+  m_Size: {x: 10.5, y: 21}
   m_EdgeRadius: 0
 --- !u!212 &1335857932
 SpriteRenderer:
@@ -3915,7 +3915,7 @@ MonoBehaviour:
   lampType: 2
   unlitSprite: {fileID: 21300000, guid: 9d2fcb4e998cb4518ae89fc596b95cb4, type: 3}
   litSprite: {fileID: 21300000, guid: 8406fdb391dda4699a63ff381e3c9d6d, type: 3}
-  timeToLight: 0.75
+  timeToLight: 0.55
   firstLightSparkReward: 1
   relightSparkReward: 1
   darknessPushMultiplier: 1
@@ -4117,7 +4117,7 @@ MonoBehaviour:
   unlitSprite: {fileID: 21300000, guid: 298dad3e2f49d4b9f816e8848dea8dad, type: 3}
   litSprite: {fileID: 21300000, guid: 94aa2875cc113477f95375f2f010a62a, type: 3}
   timeToLight: 1.4
-  firstLightSparkReward: 3
+  firstLightSparkReward: 5
   relightSparkReward: 1
   darknessPushMultiplier: 1.75
   isLit: 0
@@ -4262,7 +4262,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 6, y: 12}
+  m_Size: {x: 10.5, y: 21}
   m_EdgeRadius: 0
 --- !u!212 &1376619896
 SpriteRenderer:
@@ -4332,7 +4332,7 @@ Transform:
   m_GameObject: {fileID: 1376619892}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 168, y: 10.17, z: 0}
+  m_LocalPosition: {x: 168, y: 9.04, z: 0}
   m_LocalScale: {x: 0.5714286, y: 0.5714286, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5657,8 +5657,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DarknessController
   player: {fileID: 445935889}
   gameManager: {fileID: 1604115131}
-  advanceSpeed: 8
-  pushBackDistance: 12
+  advanceSpeed: 9
+  pushBackDistance: 18
   resetX: -53
   clampTrailingDistance: 1
   maximumTrailingDistance: 24
@@ -5935,7 +5935,7 @@ MonoBehaviour:
   lampType: 3
   unlitSprite: {fileID: 21300000, guid: 31c327b419e30479da70569deec5b870, type: 3}
   litSprite: {fileID: 21300000, guid: bcbf4a9c9b5024cfb9ed1ead790f26cf, type: 3}
-  timeToLight: 0.9
+  timeToLight: 0.55
   firstLightSparkReward: 1
   relightSparkReward: 1
   darknessPushMultiplier: 1
@@ -6081,7 +6081,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 6, y: 12}
+  m_Size: {x: 10.5, y: 21}
   m_EdgeRadius: 0
 --- !u!212 &2024018512
 SpriteRenderer:
