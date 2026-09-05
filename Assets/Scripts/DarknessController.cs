@@ -1,11 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Collider2D))]
 public sealed class DarknessController : MonoBehaviour
 {
     [SerializeField] private Transform player;
     [SerializeField] private GameManager gameManager;
+    [SerializeField] private GameObject darkness;
     [SerializeField, Min(0f)] private float advanceSpeed = 0.35f;
     [SerializeField, Min(0f)] private float pushBackDistance = 5f;
     [SerializeField] private float resetX = -31f;
@@ -36,6 +38,23 @@ public sealed class DarknessController : MonoBehaviour
         }
 
         transform.position += Vector3.right * advanceSpeed * Time.deltaTime;
+
+        float distanceApart = getSqrDistance(transform.position, player.position);
+
+        //Convert 0 and 200 distance range to 0f and 1f range
+        float lerp = mapValue(distanceApart, 0, 200, 0f, 1f);
+
+        darkness.GetComponent<RawImage>().color = new Color(0, 0, 0, Mathf.Lerp(0.8f, 0, lerp));
+    }
+
+    public float getSqrDistance(Vector3 v1, Vector3 v2)
+    {
+        return (v1 - v2).sqrMagnitude;
+    }
+
+    float mapValue(float mainValue, float inValueMin, float inValueMax, float outValueMin, float outValueMax)
+    {
+        return (mainValue - inValueMin) * (outValueMax - outValueMin) / (inValueMax - inValueMin) + outValueMin;
     }
 
     public void Configure(Transform targetPlayer, GameManager manager)
