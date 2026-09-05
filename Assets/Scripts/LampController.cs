@@ -32,6 +32,8 @@ public sealed class LampController : MonoBehaviour
     [SerializeField, Min(1)] private int relightSparkReward = 1;
     [SerializeField, Min(0.1f)] private float darknessPushMultiplier = 1f;
     [SerializeField] private bool isLit;
+    [SerializeField] private ParticleSystem lightingEffect;
+    [SerializeField] private ParticleSystem extinguishEffect;
 
     // set internal state variables
     // Lamps expose state so checkpoints and results can distinguish a unique
@@ -144,6 +146,10 @@ public sealed class LampController : MonoBehaviour
 
         isLit = false;
         holdTimer = 0f;
+        if (extinguishEffect != null)
+        {
+            extinguishEffect.Play();
+        }
         ApplySprite();
     }
 
@@ -176,6 +182,10 @@ public sealed class LampController : MonoBehaviour
         hasEverBeenLit = true;
         holdTimer = 0f;
         ApplySprite();
+        if (lightingEffect != null)
+        {
+            lightingEffect.Play();
+        }
         GameManager.instance?.HideLoadingBar();
 
         // play the lighting sound, only if one is attached
