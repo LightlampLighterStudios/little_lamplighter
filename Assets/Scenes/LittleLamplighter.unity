@@ -412,7 +412,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: a21d634ecc921419a91b4c70f112084a, type: 3}
+  m_Resource: {fileID: 8300000, guid: 1048ec90fc52bbe45997b00ffe83a1ef, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -693,9 +693,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92f1021f1b5dd406289939bb2bf3cf63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldScroller: {fileID: 0}
+  backwardScrollCompensation: 1
   moveSpeed: 5
   jumpForce: 12
-  isGrounded: 1
   minX: -27
   maxX: 27
 --- !u!114 &445935892
@@ -1364,13 +1365,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalLamps: 4
-  sparks: 0
-  sparkText: {fileID: 1492745658}
-  lives: 3
   nightLength: 90
-  sunsetColor: {r: 0.98039216, g: 0.85490197, b: 0.7607843, a: 1}
-  nightColor: {r: 0.18062478, g: 0.22704475, b: 0.38679248, a: 1}
   worldScroller: {fileID: 106466130}
+  darkness: {fileID: 0}
+  activateDarknessOnLevelStart: 0
+  hud: {fileID: 0}
+  resultsPanel: {fileID: 0}
+  canLoseFinalLife: 0
+  silverLampRequirement: 4
+  sparks: 0
+  lives: 3
 --- !u!4 &1604115132
 Transform:
   m_ObjectHideFlags: 0
