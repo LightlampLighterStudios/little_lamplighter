@@ -1661,6 +1661,7 @@ GameObject:
   - component: {fileID: 5957413380332614109}
   - component: {fileID: 5001398834422455712}
   - component: {fileID: 8974324669711572584}
+  - component: {fileID: 6752373075058646989}
   m_Layer: 0
   m_Name: RestartButton
   m_TagString: Untagged
@@ -1771,6 +1772,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6752373075058646989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7032077966611254825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a64139d2d5c341679959c35c2c2ae2c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SelectOnPointerEnter
 --- !u!1 &7237682669745274496
 GameObject:
   m_ObjectHideFlags: 0
@@ -1783,6 +1796,7 @@ GameObject:
   - component: {fileID: 7139019783417419959}
   - component: {fileID: 1380178315144372295}
   - component: {fileID: 910611460943483919}
+  - component: {fileID: 1928276653117714131}
   m_Layer: 0
   m_Name: LevelSelectButton
   m_TagString: Untagged
@@ -1870,11 +1884,11 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.92941177, g: 0.85882354, b: 0.70980394, a: 1}
-    m_HighlightedColor: {r: 1, g: 0.9490196, b: 0.827451, a: 1}
+    m_NormalColor: {r: 0.8901961, g: 0.68235296, b: 0.31764707, a: 1}
+    m_HighlightedColor: {r: 0.98039216, g: 0.7921569, b: 0.45490196, a: 1}
     m_PressedColor: {r: 0.74509805, g: 0.5529412, b: 0.23921569, a: 1}
-    m_SelectedColor: {r: 1, g: 0.9490196, b: 0.827451, a: 1}
-    m_DisabledColor: {r: 0.92941177, g: 0.85882354, b: 0.70980394, a: 1}
+    m_SelectedColor: {r: 0.98039216, g: 0.7921569, b: 0.45490196, a: 1}
+    m_DisabledColor: {r: 0.8901961, g: 0.68235296, b: 0.31764707, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.12
   m_SpriteState:
@@ -1893,6 +1907,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1928276653117714131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7237682669745274496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a64139d2d5c341679959c35c2c2ae2c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SelectOnPointerEnter
 --- !u!1 &7887576702316053198
 GameObject:
   m_ObjectHideFlags: 0
