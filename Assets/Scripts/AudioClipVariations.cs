@@ -27,10 +27,13 @@ public sealed class AudioClipVariations : MonoBehaviour
     // Plays a random clip from the array. Falls back to whatever clip is
     // already assigned on the AudioSource when no variations are configured,
     // so adding this component with an empty array changes nothing.
-    public void PlayRandom()
+    // basePitch lets a caller (e.g. a pitch-escalation feature) shift where
+    // the jitter is centred, instead of always centring on 1.0.
+    public void PlayRandom(float basePitch = 1f)
     {
         if (clips == null || clips.Length == 0)
         {
+            source.pitch = basePitch;
             source.Play();
             return;
         }
@@ -38,7 +41,7 @@ public sealed class AudioClipVariations : MonoBehaviour
         int index = PickIndex();
         lastClipIndex = index;
 
-        source.pitch = 1f + Random.Range(-pitchJitter, pitchJitter);
+        source.pitch = basePitch + Random.Range(-pitchJitter, pitchJitter);
         // Volume only ever moves down from the authored value, never up,
         // so a jittered play can't suddenly poke out above the mix.
         source.volume = baseVolume * (1f - Random.Range(0f, volumeJitter));
