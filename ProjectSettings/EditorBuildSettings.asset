@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Elliot_Level2.unity
     guid: 91886864514d5d544875b6522cd98182
   - enabled: 1
+    path: Assets/Scenes/Soulie_Level3.unity
+    guid: bee193d4975896943b22dfe62cb29430
+  - enabled: 1
     path: Assets/Scenes/TemporaryLevelSelect.unity
     guid: fab90e1e0ee0668468ec78bf91589944
   m_configObjects:

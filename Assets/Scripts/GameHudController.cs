@@ -95,6 +95,11 @@ public sealed class GameHudController : MonoBehaviour
         if (lampProgressFill != null)
         {
             lampProgressFill.fillAmount = Mathf.Clamp01(progress);
+
+            if (lamp != null)
+            {
+                lampProgressFill.color = lamp.ProgressColour;
+            }
         }
     }
 
