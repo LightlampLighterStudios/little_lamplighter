@@ -24,7 +24,7 @@ public sealed class FiniteScrollingGroup : MonoBehaviour
         isInitialized = true;
     }
 
-    public void Scroll(float worldDistance)
+    public void Scroll(float signedWorldDistance)
     {
         // Ignore movement if initialization failed.
         if (!isInitialized)
@@ -32,11 +32,11 @@ public sealed class FiniteScrollingGroup : MonoBehaviour
             return;
         }
 
-        // Move the complete group left.
-        // Children keep their relative positions.
+        // Positive distance is forward travel and moves the group left.
+        // Negative distance is backtracking and moves the group right.
         transform.position +=
             Vector3.left *
-            worldDistance *
+            signedWorldDistance *
             speedMultiplier;
     }
 

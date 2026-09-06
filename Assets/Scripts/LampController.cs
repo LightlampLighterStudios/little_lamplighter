@@ -1,14 +1,39 @@
 using System;
 using UnityEngine;
 
+public enum LampType
+{
+    Classic,
+    Scrollwork,
+    Heritage,
+    Botanical,
+    Hooded,
+    Triple,
+    Golden
+}
+
+public enum LampGameplayCategory
+{
+    Standard,
+    Damaged,
+    Power,
+    Golden
+}
+
 public sealed class LampController : MonoBehaviour
 {
     [SerializeField] private string lampId = "Lamp";
+    [SerializeField] private LampType lampType = LampType.Classic;
     [SerializeField] private Sprite unlitSprite;
     [SerializeField] private Sprite litSprite;
     // This will be the time of how long the player must hold E to light this lamp will later install loading bar sp player can see
     [SerializeField, Min(0.1f)] private float timeToLight = 0.55f;
+    [SerializeField, Min(1)] private int firstLightSparkReward = 1;
+    [SerializeField, Min(1)] private int relightSparkReward = 1;
+    [SerializeField, Min(0.1f)] private float darknessPushMultiplier = 1f;
     [SerializeField] private bool isLit;
+    [SerializeField] private ParticleSystem lightingEffect;
+    [SerializeField] private ParticleSystem extinguishEffect;
 
     [Header("Audio - two separate sounds, two separate slots")]
     // CASTING: plays once at the start of the hold, for the whole
@@ -37,9 +62,14 @@ public sealed class LampController : MonoBehaviour
     public event Action<LampController, bool> Lit;
 
     public string LampId => ResolveLampId();
+    public LampType Type => lampType;
+    public LampGameplayCategory GameplayCategory => ResolveGameplayCategory();
     public bool IsLit => isLit;
     public bool HasEverBeenLit => hasEverBeenLit;
+    public float TimeToLight => timeToLight;
+    public float DarknessPushMultiplier => darknessPushMultiplier;
     public float LightingProgress => Mathf.Clamp01(holdTimer / Mathf.Max(0.01f, timeToLight));
+    public Color ProgressColour => ResolveProgressColour();
 
     private void Awake()
     {
@@ -56,7 +86,7 @@ public sealed class LampController : MonoBehaviour
 
     private void Update()
     {
-        UpdateTutorialHighlight();
+        UpdateVisualFeedback();
 
         if (isLit)
         {
@@ -106,6 +136,25 @@ public sealed class LampController : MonoBehaviour
         ApplySprite();
     }
 
+    public void ConfigureType(
+        LampType type,
+        int firstLightReward = 1,
+        int relightReward = 1,
+        float pushMultiplier = 1f)
+    {
+        lampType = type;
+        firstLightSparkReward = Mathf.Max(1, firstLightReward);
+        relightSparkReward = Mathf.Max(1, relightReward);
+        darknessPushMultiplier = Mathf.Max(0.1f, pushMultiplier);
+    }
+
+    public int GetSparkReward(bool isRelight)
+    {
+        return isRelight
+            ? Mathf.Max(1, relightSparkReward)
+            : Mathf.Max(1, firstLightSparkReward);
+    }
+
     public void Extinguish()
     {
         // Gusts remove the current light but preserve HasEverBeenLit so the
@@ -117,6 +166,10 @@ public sealed class LampController : MonoBehaviour
 
         isLit = false;
         holdTimer = 0f;
+        if (extinguishEffect != null)
+        {
+            extinguishEffect.Play();
+        }
         ApplySprite();
     }
 
@@ -149,6 +202,10 @@ public sealed class LampController : MonoBehaviour
         hasEverBeenLit = true;
         holdTimer = 0f;
         ApplySprite();
+        if (lightingEffect != null)
+        {
+            lightingEffect.Play();
+        }
         GameManager.instance?.HideLoadingBar();
         PlayLightingSfx();
 
@@ -210,18 +267,63 @@ public sealed class LampController : MonoBehaviour
         return Mathf.Min(1f + lampsLitSoFar * lightingPitchStep, lightingPitchMax);
     }
 
-    private void UpdateTutorialHighlight()
+    private void UpdateVisualFeedback()
     {
-        if (!tutorialHighlighted || spriteRenderer == null)
+        if (spriteRenderer == null)
         {
             return;
         }
 
         float pulse = (Mathf.Sin(Time.unscaledTime * 5f) + 1f) * 0.5f;
-        spriteRenderer.color = Color.Lerp(
-            restingColour,
-            new Color(1f, 0.82f, 0.32f, restingColour.a),
-            pulse * 0.65f);
+
+        if (tutorialHighlighted)
+        {
+            spriteRenderer.color = Color.Lerp(
+                restingColour,
+                new Color(1f, 0.82f, 0.32f, restingColour.a),
+                pulse * 0.65f);
+            return;
+        }
+
+        if (nearbyPlayer == null || isLit || GameplayCategory == LampGameplayCategory.Standard)
+        {
+            spriteRenderer.color = restingColour;
+            return;
+        }
+
+        Color categoryColour = ProgressColour;
+        categoryColour.a = restingColour.a;
+        spriteRenderer.color = Color.Lerp(restingColour, categoryColour, 0.16f + pulse * 0.2f);
+    }
+
+    private LampGameplayCategory ResolveGameplayCategory()
+    {
+        switch (lampType)
+        {
+            case LampType.Hooded:
+                return LampGameplayCategory.Damaged;
+            case LampType.Triple:
+                return LampGameplayCategory.Power;
+            case LampType.Golden:
+                return LampGameplayCategory.Golden;
+            default:
+                return LampGameplayCategory.Standard;
+        }
+    }
+
+    private Color ResolveProgressColour()
+    {
+        switch (GameplayCategory)
+        {
+            case LampGameplayCategory.Damaged:
+                return new Color(1f, 0.42f, 0.16f, 1f);
+            case LampGameplayCategory.Power:
+                return new Color(0.38f, 0.86f, 1f, 1f);
+            case LampGameplayCategory.Golden:
+                return new Color(1f, 0.78f, 0.08f, 1f);
+            default:
+                return new Color(1f, 0.82f, 0.32f, 1f);
+        }
     }
 
     private void ApplySprite()

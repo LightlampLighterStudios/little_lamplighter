@@ -13,8 +13,7 @@ public sealed class TutorialDirector : MonoBehaviour
         ScriptedDarknessCapture,
         WaitingForDarknessRecoveryLamp,
         WaitingForFirstLamp,
-        WaitingForPuddleJump,
-        ClearingTutorialPuddle,
+        WaitingForPuddlePractice,
         WaitingForGustLamp,
         WaitingForRelight,
         Complete
@@ -31,6 +30,7 @@ public sealed class TutorialDirector : MonoBehaviour
     [Serializable]
     private sealed class CheckpointSnapshot
     {
+        public WorldScroller.CheckpointSnapshot world;
         public Vector3 routePosition;
         public Vector3 playerPosition;
         public Vector3 darknessPosition;
@@ -47,6 +47,7 @@ public sealed class TutorialDirector : MonoBehaviour
     [SerializeField] private Transform darknessRecoveryCheckpoint;
     [SerializeField] private LampController firstLamp;
     [SerializeField] private PuddleHazard tutorialPuddle;
+    [SerializeField] private PuddleHazard[] tutorialPracticePuddles;
     [SerializeField] private LampController gustLamp;
     [SerializeField] private LampController[] allLamps;
 
@@ -63,6 +64,7 @@ public sealed class TutorialDirector : MonoBehaviour
     [SerializeField, Min(0.05f)] private float darknessCaptureDuration = 4f;
     [SerializeField, Min(0f)] private float darknessRecoveryDistance = 8f;
     [SerializeField, Min(0f)] private float recoveryLampHorizontalOffset = 1.5f;
+    [SerializeField, Min(0f)] private float darknessRespawnMargin = 1f;
 
     private TutorialState state = TutorialState.Opening;
     private CheckpointSnapshot latestCheckpoint;
@@ -75,10 +77,15 @@ public sealed class TutorialDirector : MonoBehaviour
         gameManager.RespawnRequestedEvent += HandleRespawnRequested;
         gameManager.LevelEndedEvent += HandleLevelEnded;
         player.MovementPerformed += HandleOpeningMovement;
-        player.JumpPerformed += HandleJump;
         firstLamp.Lit += HandleLampLit;
         gustLamp.Lit += HandleLampLit;
-        tutorialPuddle.PlayerEntered += HandlePuddleEntered;
+
+        if (
+            (tutorialPracticePuddles == null || tutorialPracticePuddles.Length == 0) &&
+            tutorialPuddle != null)
+        {
+            tutorialPracticePuddles = new[] { tutorialPuddle };
+        }
 
         movementPrompt?.SetActive(true);
         lampPrompt?.SetActive(false);
@@ -107,7 +114,6 @@ public sealed class TutorialDirector : MonoBehaviour
         if (player != null)
         {
             player.MovementPerformed -= HandleOpeningMovement;
-            player.JumpPerformed -= HandleJump;
         }
 
         if (firstLamp != null)
@@ -120,10 +126,6 @@ public sealed class TutorialDirector : MonoBehaviour
             gustLamp.Lit -= HandleLampLit;
         }
 
-        if (tutorialPuddle != null)
-        {
-            tutorialPuddle.PlayerEntered -= HandlePuddleEntered;
-        }
     }
 
     public void Configure(
@@ -149,6 +151,9 @@ public sealed class TutorialDirector : MonoBehaviour
         darkness = darknessController;
         firstLamp = requiredFirstLamp;
         tutorialPuddle = requiredPuddle;
+        tutorialPracticePuddles = requiredPuddle != null
+            ? new[] { requiredPuddle }
+            : Array.Empty<PuddleHazard>();
         gustLamp = requiredGustLamp;
         allLamps = lamps;
         movementPrompt = movePrompt;
@@ -171,7 +176,7 @@ public sealed class TutorialDirector : MonoBehaviour
 
     public void EnterSection(TutorialSectionType sectionType)
     {
-        if (respawning || gameManager.IsLevelComplete)
+        if (respawning || gameManager.IsLevelEnded)
         {
             return;
         }
@@ -194,14 +199,13 @@ public sealed class TutorialDirector : MonoBehaviour
                 break;
 
             case TutorialSectionType.FirstPuddle:
+                state = TutorialState.WaitingForPuddlePractice;
                 latestCheckpoint = CaptureCheckpoint();
-                state = TutorialState.WaitingForPuddleJump;
-                gameManager.PauseWorld();
                 jumpPrompt?.SetActive(true);
                 break;
 
             case TutorialSectionType.PuddleCleared:
-                if (state == TutorialState.ClearingTutorialPuddle)
+                if (state == TutorialState.WaitingForPuddlePractice)
                 {
                     state = TutorialState.NormalPlay;
                     jumpPrompt?.SetActive(false);
@@ -229,7 +233,7 @@ public sealed class TutorialDirector : MonoBehaviour
 
     public void BeginRelightTutorial(LampController lamp)
     {
-        if (respawning || lamp != gustLamp)
+        if (respawning || gameManager.IsLevelEnded || lamp != gustLamp)
         {
             return;
         }
@@ -242,7 +246,7 @@ public sealed class TutorialDirector : MonoBehaviour
 
     public void RespawnAtLatestCheckpoint(bool restoreLives)
     {
-        if (!respawning)
+        if (!respawning && !gameManager.IsLevelEnded)
         {
             StartCoroutine(RestoreCheckpointRoutine(restoreLives));
         }
@@ -252,6 +256,7 @@ public sealed class TutorialDirector : MonoBehaviour
     {
         if (
             respawning ||
+            gameManager.IsLevelEnded ||
             state != TutorialState.NormalPlay ||
             recoveryCheckpoint == null)
         {
@@ -274,13 +279,27 @@ public sealed class TutorialDirector : MonoBehaviour
 
     private void HandleRespawnRequested()
     {
+        if (respawning || gameManager.IsLevelEnded)
+        {
+            return;
+        }
+
         if (state == TutorialState.ScriptedDarknessCapture)
         {
             UpdateDarknessRecoveryCheckpoint();
             StartCoroutine(RestoreCheckpointRoutine(
                 false,
                 TutorialState.WaitingForDarknessRecoveryLamp,
+                false,
                 false));
+            return;
+        }
+
+        if (state == TutorialState.WaitingForPuddlePractice)
+        {
+            StartCoroutine(RestoreCheckpointRoutine(
+                false,
+                TutorialState.WaitingForPuddlePractice));
             return;
         }
 
@@ -289,6 +308,13 @@ public sealed class TutorialDirector : MonoBehaviour
 
     private void HandleLevelEnded(bool succeeded)
     {
+        // A pending fade must never restore movement or checkpoints after failure.
+        StopAllCoroutines();
+        respawning = false;
+        if (fadeOverlay != null)
+        {
+            SetFadeAlpha(0f);
+        }
         HideAllPrompts();
     }
 
@@ -353,17 +379,6 @@ public sealed class TutorialDirector : MonoBehaviour
             darknessCaptureDuration);
     }
 
-    private void HandleJump()
-    {
-        if (state != TutorialState.WaitingForPuddleJump)
-        {
-            return;
-        }
-
-        state = TutorialState.ClearingTutorialPuddle;
-        gameManager.ResumeWorld();
-    }
-
     private void HandleLampLit(LampController lamp, bool isRelight)
     {
         if (
@@ -398,25 +413,11 @@ public sealed class TutorialDirector : MonoBehaviour
         }
     }
 
-    private void HandlePuddleEntered(PuddleHazard puddle, PlayerController targetPlayer)
-    {
-        if (
-            puddle == tutorialPuddle &&
-            (state == TutorialState.WaitingForPuddleJump ||
-            state == TutorialState.ClearingTutorialPuddle) &&
-            !respawning)
-        {
-            StartCoroutine(RestoreCheckpointRoutine(
-                true,
-                TutorialState.WaitingForPuddleJump,
-                false));
-        }
-    }
-
     private CheckpointSnapshot CaptureCheckpoint()
     {
         CheckpointSnapshot snapshot = new CheckpointSnapshot
         {
+            world = worldScroller.CaptureCheckpoint(),
             routePosition = tutorialRoute.position,
             playerPosition = player.transform.position,
             darknessPosition = darkness.transform.position,
@@ -439,7 +440,8 @@ public sealed class TutorialDirector : MonoBehaviour
     private IEnumerator RestoreCheckpointRoutine(
         bool restoreLives,
         TutorialState stateAfterRespawn = TutorialState.NormalPlay,
-        bool resumeWorldAfterRespawn = true)
+        bool resumeWorldAfterRespawn = true,
+        bool restoreDarknessOffScreen = true)
     {
         if (latestCheckpoint == null)
         {
@@ -453,10 +455,22 @@ public sealed class TutorialDirector : MonoBehaviour
         yield return new WaitForSeconds(splashHoldDuration);
         yield return FadeTo(1f);
 
+        worldScroller.RestoreCheckpoint(latestCheckpoint.world);
         tutorialRoute.position = latestCheckpoint.routePosition;
         player.Teleport(latestCheckpoint.playerPosition);
-        tutorialPuddle.ResetHazard();
-        darkness.RestorePosition(latestCheckpoint.darknessPosition);
+        ResetTutorialPuddles();
+
+        if (restoreDarknessOffScreen)
+        {
+            darkness.RestoreJustOffScreen(
+                Camera.main,
+                darknessRespawnMargin);
+        }
+        else
+        {
+            darkness.RestorePosition(latestCheckpoint.darknessPosition);
+        }
+
         gameManager.RestoreProgress(latestCheckpoint.progress, restoreLives);
 
         foreach (LampState lampState in latestCheckpoint.lampStates)
@@ -465,7 +479,7 @@ public sealed class TutorialDirector : MonoBehaviour
         }
 
         state = stateAfterRespawn;
-        jumpPrompt?.SetActive(state == TutorialState.WaitingForPuddleJump);
+        jumpPrompt?.SetActive(state == TutorialState.WaitingForPuddlePractice);
         lampPrompt?.SetActive(state == TutorialState.WaitingForDarknessRecoveryLamp);
         relightPrompt?.SetActive(false);
 
@@ -482,6 +496,19 @@ public sealed class TutorialDirector : MonoBehaviour
         if (resumeWorldAfterRespawn)
         {
             gameManager.ResumeWorld();
+        }
+    }
+
+    private void ResetTutorialPuddles()
+    {
+        if (tutorialPracticePuddles == null)
+        {
+            return;
+        }
+
+        foreach (PuddleHazard puddle in tutorialPracticePuddles)
+        {
+            puddle?.ResetHazard();
         }
     }
 

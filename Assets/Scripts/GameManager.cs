@@ -181,7 +181,7 @@ public sealed class GameManager : MonoBehaviour
     {
         // Called by the tutorial trigger once the player reaches the street.
         // The opening movement response also reaches this same entry point.
-        if (levelComplete || levelStarted)
+        if (IsLevelEnded || levelStarted)
         {
             // Ignore duplicate trigger calls or calls after game over.
             return;
@@ -221,9 +221,9 @@ public sealed class GameManager : MonoBehaviour
         }
 
         uniqueLampIds.Add(lamp.LampId);
-        sparks++;
+        sparks += lamp.GetSparkReward(isRelight);
         hud?.SetSparks(sparks);
-        darkness?.PushBack();
+        darkness?.PushBack(lamp.DarknessPushMultiplier);
         SparksChanged?.Invoke(sparks);
         LampLitEvent?.Invoke(lamp, isRelight);
     }
@@ -254,10 +254,22 @@ public sealed class GameManager : MonoBehaviour
         hud?.HideLampProgress();
     }
 
+    // The opening demonstration teaches recovery without spending an orb.
+    // Real darkness collisions always use HandleDarknessContact instead.
+    public void HandleTutorialDarknessCapture()
+    {
+        if (!levelStarted || IsLevelEnded)
+        {
+            return;
+        }
+
+        RespawnRequestedEvent?.Invoke();
+    }
+
     public void HandleDarknessContact()
     {
         // Called when the player loses a life.
-        // The Level 1 tutorial protects the final life from darkness.
+        // Final-life protection is retained only for scenes that explicitly opt into it.
         if (!levelStarted || IsLevelEnded)
         {
             return;
@@ -299,7 +311,7 @@ public sealed class GameManager : MonoBehaviour
 
     public void RestoreProgress(ProgressSnapshot snapshot, bool restoreLives)
     {
-        if (snapshot == null)
+        if (snapshot == null || IsLevelEnded)
         {
             return;
         }

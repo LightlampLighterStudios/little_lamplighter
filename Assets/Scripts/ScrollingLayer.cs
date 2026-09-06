@@ -47,7 +47,7 @@ public sealed class ScrollingLayer : MonoBehaviour
         return true;
     }
 
-    public void Scroll(float worldDistance)
+    public void Scroll(float signedWorldDistance)
     {
         // Ignore movement when initialization failed.
         if (!isInitialized)
@@ -57,7 +57,7 @@ public sealed class ScrollingLayer : MonoBehaviour
 
         // Apply this layer's individual movement multiplier.
         float layerDistance =
-            worldDistance * speedMultiplier;
+            signedWorldDistance * speedMultiplier;
 
         // Avoid unnecessary work when this layer is stationary.
         if (Mathf.Approximately(layerDistance, 0f))
@@ -309,15 +309,14 @@ public sealed class ScrollingLayer : MonoBehaviour
         }
     }
 
-    private void RecycleOffscreenTiles(float distanceMoved)
+    private void RecycleOffscreenTiles(float signedDistanceMoved)
     {
-        // Read the current left edge of the camera.
         float cameraLeft = GetCameraLeftEdge();
 
         // Allow enough passes to recover from unusually large movement.
         int expectedWraps =
             Mathf.CeilToInt(
-                distanceMoved / smallestRecycleStep
+                Mathf.Abs(signedDistanceMoved) / smallestRecycleStep
             ) + 1;
 
         int safetyLimit =
@@ -328,32 +327,64 @@ public sealed class ScrollingLayer : MonoBehaviour
 
         int recycleCount = 0;
 
-        // Continue until the leftmost tile reaches the visible row again.
-        while (true)
+        if (signedDistanceMoved > 0f)
         {
-            SpriteRenderer leftmostTile =
-                FindLeftmostTile();
-
-            if (leftmostTile.bounds.max.x >= cameraLeft)
+            // Forward travel moves tiles left, so recycle expired tiles to the end.
+            while (true)
             {
-                break;
-            }
+                SpriteRenderer leftmostTile = FindLeftmostTile();
 
-            MoveToEnd(leftmostTile);
-            recycleCount++;
+                if (leftmostTile.bounds.max.x >= cameraLeft)
+                {
+                    break;
+                }
 
-            // Stop safely if configuration changes create an invalid loop.
-            if (recycleCount > safetyLimit)
-            {
-                Debug.LogError(
-                    $"{name} exceeded its recycling safety limit.",
-                    this
-                );
+                MoveToEnd(leftmostTile);
+                recycleCount++;
 
-                isInitialized = false;
-                return;
+                if (!CheckRecycleSafety(recycleCount, safetyLimit))
+                {
+                    return;
+                }
             }
         }
+        else
+        {
+            // Backtracking moves tiles right. Pull the spare rightmost tile to
+            // the start as soon as the camera's left edge would be uncovered.
+            while (true)
+            {
+                SpriteRenderer leftmostTile = FindLeftmostTile();
+
+                if (leftmostTile.bounds.min.x <= cameraLeft)
+                {
+                    break;
+                }
+
+                SpriteRenderer rightmostTile = FindRightmostTile();
+                MoveToStart(rightmostTile);
+                recycleCount++;
+
+                if (!CheckRecycleSafety(recycleCount, safetyLimit))
+                {
+                    return;
+                }
+            }
+        }
+    }
+
+    private bool CheckRecycleSafety(int recycleCount, int safetyLimit)
+    {
+        if (recycleCount <= safetyLimit)
+        {
+            return true;
+        }
+
+        Debug.LogError(
+            $"{name} exceeded its recycling safety limit.",
+            this);
+        isInitialized = false;
+        return false;
     }
 
     private void MoveToEnd(SpriteRenderer tileToMove)
@@ -372,15 +403,32 @@ public sealed class ScrollingLayer : MonoBehaviour
         );
     }
 
-    private SpriteRenderer FindLeftmostTile()
+    private void MoveToStart(SpriteRenderer tileToMove)
     {
-        // Begin with the first configured tile.
-        SpriteRenderer leftmostTile = tiles[0];
+        SpriteRenderer leftmostTile = FindLeftmostTile(tileToMove);
+        float newRightEdge = leftmostTile.bounds.min.x + seamOverlap;
+
+        SetX(
+            tileToMove.transform,
+            newRightEdge - tileToMove.bounds.extents.x);
+    }
+
+    private SpriteRenderer FindLeftmostTile(
+        SpriteRenderer excludedTile = null)
+    {
+        SpriteRenderer leftmostTile = null;
 
         // Find the tile whose left edge is furthest left.
         foreach (SpriteRenderer tile in tiles)
         {
-            if (tile.bounds.min.x < leftmostTile.bounds.min.x)
+            if (tile == excludedTile)
+            {
+                continue;
+            }
+
+            if (
+                leftmostTile == null ||
+                tile.bounds.min.x < leftmostTile.bounds.min.x)
             {
                 leftmostTile = tile;
             }
@@ -390,8 +438,7 @@ public sealed class ScrollingLayer : MonoBehaviour
     }
 
     private SpriteRenderer FindRightmostTile(
-        SpriteRenderer excludedTile
-    )
+        SpriteRenderer excludedTile = null)
     {
         SpriteRenderer rightmostTile = null;
 

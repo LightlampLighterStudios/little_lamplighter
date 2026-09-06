@@ -34,6 +34,9 @@ public sealed class LevelCheckpointController : MonoBehaviour
     [SerializeField, Min(0f)] private float caughtHoldDuration = 0.35f;
     [Tooltip("Distance from the player to the visible darkness front after respawn.")]
     [SerializeField, Min(0f)] private float darknessRespawnDistance = 14f;
+    [Tooltip("Place darkness just beyond the camera edge instead of a fixed player distance.")]
+    [SerializeField] private bool restoreDarknessOffScreen;
+    [SerializeField, Min(0f)] private float darknessRespawnMargin = 1f;
 
     private LampController[] lamps;
     private CheckpointSnapshot latestCheckpoint;
@@ -68,6 +71,7 @@ public sealed class LevelCheckpointController : MonoBehaviour
         CaptureCheckpoint();
         gameManager.LampLitEvent += HandleLampLit;
         gameManager.RespawnRequestedEvent += HandleRespawnRequested;
+        gameManager.LevelEndedEvent += HandleLevelEnded;
     }
 
     private void OnDestroy()
@@ -79,6 +83,7 @@ public sealed class LevelCheckpointController : MonoBehaviour
 
         gameManager.LampLitEvent -= HandleLampLit;
         gameManager.RespawnRequestedEvent -= HandleRespawnRequested;
+        gameManager.LevelEndedEvent -= HandleLevelEnded;
     }
 
     private void HandleLampLit(LampController lamp, bool isRelight)
@@ -91,9 +96,19 @@ public sealed class LevelCheckpointController : MonoBehaviour
 
     private void HandleRespawnRequested()
     {
-        if (!respawning && latestCheckpoint != null)
+        if (!respawning && latestCheckpoint != null && !gameManager.IsLevelEnded)
         {
             StartCoroutine(RestoreCheckpointRoutine());
+        }
+    }
+
+    private void HandleLevelEnded(bool succeeded)
+    {
+        StopAllCoroutines();
+        respawning = false;
+        if (fadeOverlay != null)
+        {
+            SetFadeAlpha(0f);
         }
     }
 
@@ -151,9 +166,16 @@ public sealed class LevelCheckpointController : MonoBehaviour
         }
 
         gameManager.RestoreProgress(latestCheckpoint.progress, false);
-        Vector3 darknessRespawnPosition = darkness.GetPositionWithFrontAt(
-            player.transform.position.x - darknessRespawnDistance);
-        darkness.RestorePosition(darknessRespawnPosition);
+        if (restoreDarknessOffScreen)
+        {
+            darkness.RestoreJustOffScreen(Camera.main, darknessRespawnMargin);
+        }
+        else
+        {
+            Vector3 darknessRespawnPosition = darkness.GetPositionWithFrontAt(
+                player.transform.position.x - darknessRespawnDistance);
+            darkness.RestorePosition(darknessRespawnPosition);
+        }
 
         yield return FadeTo(0f);
 
