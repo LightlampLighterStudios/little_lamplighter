@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public sealed class ResultsPanel : MonoBehaviour
 {
     [SerializeField] private GameObject panel;
+    [SerializeField] private GameOverPanel gameOverPrefab;
+    private GameOverPanel gameOverInstance;
     [SerializeField] private Text titleText;
     [SerializeField] private Text medalText;
     [SerializeField] private Text statisticsText;
@@ -61,7 +63,20 @@ public sealed class ResultsPanel : MonoBehaviour
 
     public void ShowFailure(GameManager manager)
     {
+        StopAllCoroutines();
         player?.SetControlsEnabled(false);
+
+        if (gameOverPrefab != null)
+        {
+            panel?.SetActive(false);
+            if (gameOverInstance == null)
+            {
+                gameOverInstance = Instantiate(gameOverPrefab);
+            }
+
+            gameOverInstance.Show(manager, levelSelectScene);
+            return;
+        }
 
         if (titleText != null)
         {

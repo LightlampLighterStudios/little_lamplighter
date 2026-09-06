@@ -176,7 +176,7 @@ public sealed class TutorialDirector : MonoBehaviour
 
     public void EnterSection(TutorialSectionType sectionType)
     {
-        if (respawning || gameManager.IsLevelComplete)
+        if (respawning || gameManager.IsLevelEnded)
         {
             return;
         }
@@ -233,7 +233,7 @@ public sealed class TutorialDirector : MonoBehaviour
 
     public void BeginRelightTutorial(LampController lamp)
     {
-        if (respawning || lamp != gustLamp)
+        if (respawning || gameManager.IsLevelEnded || lamp != gustLamp)
         {
             return;
         }
@@ -246,7 +246,7 @@ public sealed class TutorialDirector : MonoBehaviour
 
     public void RespawnAtLatestCheckpoint(bool restoreLives)
     {
-        if (!respawning)
+        if (!respawning && !gameManager.IsLevelEnded)
         {
             StartCoroutine(RestoreCheckpointRoutine(restoreLives));
         }
@@ -256,6 +256,7 @@ public sealed class TutorialDirector : MonoBehaviour
     {
         if (
             respawning ||
+            gameManager.IsLevelEnded ||
             state != TutorialState.NormalPlay ||
             recoveryCheckpoint == null)
         {
@@ -278,6 +279,11 @@ public sealed class TutorialDirector : MonoBehaviour
 
     private void HandleRespawnRequested()
     {
+        if (respawning || gameManager.IsLevelEnded)
+        {
+            return;
+        }
+
         if (state == TutorialState.ScriptedDarknessCapture)
         {
             UpdateDarknessRecoveryCheckpoint();
@@ -302,6 +308,13 @@ public sealed class TutorialDirector : MonoBehaviour
 
     private void HandleLevelEnded(bool succeeded)
     {
+        // A pending fade must never restore movement or checkpoints after failure.
+        StopAllCoroutines();
+        respawning = false;
+        if (fadeOverlay != null)
+        {
+            SetFadeAlpha(0f);
+        }
         HideAllPrompts();
     }
 

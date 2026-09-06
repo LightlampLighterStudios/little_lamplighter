@@ -71,6 +71,7 @@ public sealed class LevelCheckpointController : MonoBehaviour
         CaptureCheckpoint();
         gameManager.LampLitEvent += HandleLampLit;
         gameManager.RespawnRequestedEvent += HandleRespawnRequested;
+        gameManager.LevelEndedEvent += HandleLevelEnded;
     }
 
     private void OnDestroy()
@@ -82,6 +83,7 @@ public sealed class LevelCheckpointController : MonoBehaviour
 
         gameManager.LampLitEvent -= HandleLampLit;
         gameManager.RespawnRequestedEvent -= HandleRespawnRequested;
+        gameManager.LevelEndedEvent -= HandleLevelEnded;
     }
 
     private void HandleLampLit(LampController lamp, bool isRelight)
@@ -94,9 +96,19 @@ public sealed class LevelCheckpointController : MonoBehaviour
 
     private void HandleRespawnRequested()
     {
-        if (!respawning && latestCheckpoint != null)
+        if (!respawning && latestCheckpoint != null && !gameManager.IsLevelEnded)
         {
             StartCoroutine(RestoreCheckpointRoutine());
+        }
+    }
+
+    private void HandleLevelEnded(bool succeeded)
+    {
+        StopAllCoroutines();
+        respawning = false;
+        if (fadeOverlay != null)
+        {
+            SetFadeAlpha(0f);
         }
     }
 
