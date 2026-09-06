@@ -1986,6 +1986,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResultsPanel
   panel: {fileID: 2119959530}
+  gameOverPrefab: {fileID: 5597714178177757735, guid: c7298a208214a22489a72abf95ca533e, type: 3}
   titleText: {fileID: 1827873158}
   medalText: {fileID: 1048359210}
   statisticsText: {fileID: 261702868}

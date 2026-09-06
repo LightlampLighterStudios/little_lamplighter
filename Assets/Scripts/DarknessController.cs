@@ -17,6 +17,7 @@ public sealed class DarknessController : MonoBehaviour
     [SerializeField, Min(0f)] private float tutorialCaptureOverlap = 20f;
     [SerializeField, Min(0.05f)] private float retreatDuration = 0.9f;
     [SerializeField, Min(0f)] private float retreatMargin = 2f;
+    [SerializeField, Min(1f)] private float minimumScreenHeightCoverage = 1.05f;
 
     private bool activeThreat;
     private bool contactLocked;
@@ -28,6 +29,53 @@ public sealed class DarknessController : MonoBehaviour
     private void Awake()
     {
         GetComponent<Collider2D>().isTrigger = true;
+    }
+
+    private void Start()
+    {
+        ScaleUniformlyToCoverScreenHeight(Camera.main);
+    }
+
+    private void ScaleUniformlyToCoverScreenHeight(Camera targetCamera)
+    {
+        if (targetCamera == null)
+        {
+            return;
+        }
+
+        bool foundRenderer = false;
+        Bounds combinedBounds = default;
+        foreach (SpriteRenderer renderer in GetComponentsInChildren<SpriteRenderer>(true))
+        {
+            if (!renderer.enabled || renderer.sprite == null)
+            {
+                continue;
+            }
+
+            if (!foundRenderer)
+            {
+                combinedBounds = renderer.bounds;
+                foundRenderer = true;
+            }
+            else
+            {
+                combinedBounds.Encapsulate(renderer.bounds);
+            }
+        }
+
+        if (!foundRenderer || combinedBounds.size.y <= Mathf.Epsilon)
+        {
+            return;
+        }
+
+        float cameraDistance = Mathf.Abs(
+            targetCamera.transform.position.z - transform.position.z);
+        float screenHeight = Mathf.Abs(
+            targetCamera.ViewportToWorldPoint(new Vector3(0.5f, 1f, cameraDistance)).y -
+            targetCamera.ViewportToWorldPoint(new Vector3(0.5f, 0f, cameraDistance)).y);
+        float targetHeight = screenHeight * minimumScreenHeightCoverage;
+        float uniformMultiplier = Mathf.Max(1f, targetHeight / combinedBounds.size.y);
+        transform.localScale *= uniformMultiplier;
     }
 
     private void Update()
@@ -258,7 +306,7 @@ public sealed class DarknessController : MonoBehaviour
         contactPosition.x =
             target.position.x - visibleFrontOffset + tutorialCaptureOverlap;
         transform.position = contactPosition;
-        gameManager?.HandleDarknessContact();
+        gameManager?.HandleTutorialDarknessCapture();
     }
 
     private IEnumerator RetreatOffScreenRoutine(Camera targetCamera)
