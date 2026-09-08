@@ -287,7 +287,7 @@ MonoBehaviour:
   levelSelectButton: {fileID: 1400787000}
   player: {fileID: 445935891}
   levelOneDemoOnly: 0
-  continueScene: 
+  continueScene: Soulie_Level3
   levelSelectScene: TemporaryLevelSelect
   runOffDuration: 1.1
   runOffSpeed: 12
@@ -30645,8 +30645,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldScroller: {fileID: 106466130}
   backwardScrollCompensation: 1.5
-  playerFollowSpeedMultiplier: 1
-  moveSpeed: 5
+  playerFollowSpeedMultiplier: 0.6
+  moveSpeed: 12
   jumpForce: 15
   minX: -27
   maxX: 27
@@ -142607,7 +142607,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -144104,6 +144104,21 @@ PrefabInstance:
       objectReference: {fileID: 823541872}
     - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
         type: 3}
+      propertyPath: scrollMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
+        type: 3}
+      propertyPath: followTarget
+      value: 
+      objectReference: {fileID: 445935889}
+    - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
+        type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
+        type: 3}
       propertyPath: 'layers.Array.data[0]'
       value: 
       objectReference: {fileID: 2066881377}
@@ -144117,6 +144132,11 @@ PrefabInstance:
       propertyPath: 'layers.Array.data[2]'
       value: 
       objectReference: {fileID: 2066881375}
+    - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
+        type: 3}
+      propertyPath: playerFollowDarkness
+      value: 
+      objectReference: {fileID: 1376796190}
     - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
         type: 3}
       propertyPath: finiteGroups.Array.size

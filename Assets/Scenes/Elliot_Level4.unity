@@ -5114,6 +5114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResultsPanel
   panel: {fileID: 1549018168}
+  gameOverPrefab: {fileID: 0}
   titleText: {fileID: 100619608}
   medalText: {fileID: 222138862}
   statisticsText: {fileID: 1008205894}
@@ -20212,6 +20213,7 @@ MonoBehaviour:
   gameManager: {fileID: 0}
   moon: {fileID: 1276508412}
   stars: {fileID: 108194537}
+  additionalStars: []
   moonFadeStart: 0.25
   moonFadeEnd: 0.55
   starsFadeStart: 0.45
@@ -20531,9 +20533,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lampId: Lamp
+  lampType: 0
   unlitSprite: {fileID: 21300000, guid: 9948c2911cc954cf6a1e3d95a3b512bf, type: 3}
   litSprite: {fileID: 21300000, guid: adbf9711c54514c31b5ab776b0c2bc32, type: 3}
   timeToLight: 0.55
+  firstLightSparkReward: 1
+  relightSparkReward: 1
+  darknessPushMultiplier: 1
   isLit: 0
   lightingEffect: {fileID: 1040528590}
   extinguishEffect: {fileID: 428535924}
@@ -30996,7 +31002,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -36322,7 +36328,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldScroller: {fileID: 106466130}
   backwardScrollCompensation: 1.5
-  moveSpeed: 5
+  playerFollowSpeedMultiplier: 0.6
+  moveSpeed: 12
   jumpForce: 15
   minX: -27
   maxX: 27
@@ -36502,9 +36509,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lampId: Lamp
+  lampType: 0
   unlitSprite: {fileID: 21300000, guid: 9948c2911cc954cf6a1e3d95a3b512bf, type: 3}
   litSprite: {fileID: 21300000, guid: adbf9711c54514c31b5ab776b0c2bc32, type: 3}
   timeToLight: 0.55
+  firstLightSparkReward: 1
+  relightSparkReward: 1
+  darknessPushMultiplier: 1
   isLit: 0
   lightingEffect: {fileID: 961793895}
   extinguishEffect: {fileID: 653787410}
@@ -52515,9 +52526,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lampId: Lamp
+  lampType: 0
   unlitSprite: {fileID: 21300000, guid: 9948c2911cc954cf6a1e3d95a3b512bf, type: 3}
   litSprite: {fileID: 21300000, guid: adbf9711c54514c31b5ab776b0c2bc32, type: 3}
   timeToLight: 1.1
+  firstLightSparkReward: 1
+  relightSparkReward: 1
+  darknessPushMultiplier: 1
   isLit: 0
   lightingEffect: {fileID: 3858367842912573489}
   extinguishEffect: {fileID: 2029102086}
@@ -77696,9 +77711,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lampId: Lamp
+  lampType: 0
   unlitSprite: {fileID: 21300000, guid: 9948c2911cc954cf6a1e3d95a3b512bf, type: 3}
   litSprite: {fileID: 21300000, guid: adbf9711c54514c31b5ab776b0c2bc32, type: 3}
   timeToLight: 0.55
+  firstLightSparkReward: 1
+  relightSparkReward: 1
+  darknessPushMultiplier: 1
   isLit: 0
   lightingEffect: {fileID: 1390092797}
   extinguishEffect: {fileID: 996069492}
@@ -88273,6 +88292,7 @@ MonoBehaviour:
   darknessRecoveryCheckpoint: {fileID: 0}
   firstLamp: {fileID: 0}
   tutorialPuddle: {fileID: 0}
+  tutorialPracticePuddles: []
   gustLamp: {fileID: 0}
   allLamps:
   - {fileID: 0}
@@ -88293,6 +88313,7 @@ MonoBehaviour:
   darknessCaptureDuration: 4
   darknessRecoveryDistance: 8
   recoveryLampHorizontalOffset: 2.8
+  darknessRespawnMargin: 1
 --- !u!1 &1177933255
 GameObject:
   m_ObjectHideFlags: 0
@@ -98262,10 +98283,13 @@ MonoBehaviour:
   advanceSpeed: 2
   pushBackDistance: 15
   resetX: -53
+  clampTrailingDistance: 0
+  maximumTrailingDistance: 24
   tutorialCaptureDistance: 14
   tutorialCaptureOverlap: 20
   retreatDuration: 0.9
   retreatMargin: 2
+  minimumScreenHeightCoverage: 1.05
 --- !u!61 &1376796191
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -113950,9 +113974,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lampId: Lamp
+  lampType: 0
   unlitSprite: {fileID: 21300000, guid: 9948c2911cc954cf6a1e3d95a3b512bf, type: 3}
   litSprite: {fileID: 21300000, guid: adbf9711c54514c31b5ab776b0c2bc32, type: 3}
   timeToLight: 1.1
+  firstLightSparkReward: 1
+  relightSparkReward: 1
+  darknessPushMultiplier: 1
   isLit: 0
   lightingEffect: {fileID: 2021662379}
   extinguishEffect: {fileID: 2025963256}
@@ -114526,9 +114554,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lampId: Lamp
+  lampType: 0
   unlitSprite: {fileID: 21300000, guid: 9948c2911cc954cf6a1e3d95a3b512bf, type: 3}
   litSprite: {fileID: 21300000, guid: adbf9711c54514c31b5ab776b0c2bc32, type: 3}
   timeToLight: 0.55
+  firstLightSparkReward: 1
+  relightSparkReward: 1
+  darknessPushMultiplier: 1
   isLit: 0
   lightingEffect: {fileID: 1565759387}
   extinguishEffect: {fileID: 397605581}
@@ -134741,6 +134773,8 @@ MonoBehaviour:
   fadeDuration: 0.3
   caughtHoldDuration: 0.35
   darknessRespawnDistance: 30
+  restoreDarknessOffScreen: 0
+  darknessRespawnMargin: 1
 --- !u!1 &2111772110
 GameObject:
   m_ObjectHideFlags: 0
@@ -139877,9 +139911,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lampId: Lamp
+  lampType: 0
   unlitSprite: {fileID: 21300000, guid: 9948c2911cc954cf6a1e3d95a3b512bf, type: 3}
   litSprite: {fileID: 21300000, guid: adbf9711c54514c31b5ab776b0c2bc32, type: 3}
   timeToLight: 0.55
+  firstLightSparkReward: 1
+  relightSparkReward: 1
+  darknessPushMultiplier: 1
   isLit: 0
   lightingEffect: {fileID: 2140956407}
   extinguishEffect: {fileID: 1958956394}
@@ -145155,6 +145193,26 @@ PrefabInstance:
       propertyPath: extinguishEffect
       value: 
       objectReference: {fileID: 871077575}
+    - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
+        type: 3}
+      propertyPath: scrollMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
+        type: 3}
+      propertyPath: followTarget
+      value: 
+      objectReference: {fileID: 445935889}
+    - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
+        type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 3525530914093801594, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
+        type: 3}
+      propertyPath: playerFollowDarkness
+      value: 
+      objectReference: {fileID: 1376796190}
     - target: {fileID: 3767103184083125090, guid: 5c43bd90f6e8ceb46b5b2e2c202677c8,
         type: 3}
       propertyPath: m_LocalPosition.x
