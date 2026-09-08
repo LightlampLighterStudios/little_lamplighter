@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// So tits next to PuddleHazard on the same puddle GameObject. Listens to its
+// Sits next to PuddleHazard on the same puddle GameObject. Listens to its
 // PlayerEntered event (this is fired the moment said player jumps INTO the
 // puddle, not over it) and spawns one random splash sprite, then removes
 // it after a short lifetime. Does not modify PuddleHazard.cs in any way.
@@ -11,6 +11,7 @@ public sealed class SplashEffectSpawner : MonoBehaviour
     [SerializeField, Min(0.05f)] private float splashLifetime = 0.4f;
     [SerializeField] private Vector3 splashOffset = Vector3.zero;
     [SerializeField] private int splashSortingOrder = 5;
+    [SerializeField, Min(0f)] private float splashWidthRatio = 1f;
 
     private PuddleHazard puddleHazard;
     private SpriteRenderer puddleRenderer;
@@ -55,6 +56,19 @@ public sealed class SplashEffectSpawner : MonoBehaviour
 
         SpriteRenderer splashRenderer = splashObject.AddComponent<SpriteRenderer>();
         splashRenderer.sprite = chosenSprite;
+
+        if (
+            puddleRenderer != null &&
+            puddleRenderer.sprite != null &&
+            chosenSprite != null &&
+            chosenSprite.bounds.size.x > 0f)
+        {
+            float scale =
+                puddleRenderer.sprite.bounds.size.x /
+                chosenSprite.bounds.size.x *
+                splashWidthRatio;
+            splashObject.transform.localScale = Vector3.one * scale;
+        }
 
         if (puddleRenderer != null)
         {
