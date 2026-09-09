@@ -45,9 +45,21 @@ public sealed class LampController : MonoBehaviour
     [SerializeField] private AudioSource lightingAudio;
     [SerializeField] private AudioClipVariations lightingAudioVariations;
 
-    [Header("Lighting pitch escalation - rises with each unique lamp lit")]
-    [SerializeField, Min(0f)] private float lightingPitchStep = 0.05f;
-    [SerializeField, Min(1f)] private float lightingPitchMax = 1.5f;
+    [Header("Lighting pitch escalation - climbs a scale, one degree per unique lamp lit")]
+    // Semitone offsets from the root, one entry per scale degree. Default is
+    // Mixolydian (major with a flattened 7th) - root, 2nd, 3rd, 4th, 5th,
+    // 6th, b7th. After the last degree it wraps and climbs another octave
+    // (+12 semitones), so this keeps working for levels with more lamps.
+    [SerializeField] private int[] pitchScaleSemitones = { 0, 2, 4, 5, 7, 9, 10 };
+    // Compresses the whole scale toward the root without changing its shape
+    // - 1 = full semitone steps as written above, 0.5 = half the distance
+    // between every degree. Use this if the higher lamps start sounding too
+    // high/unclear instead of lowering the ceiling below, which would just
+    // clip the top degrees flat instead of scaling them down.
+    [SerializeField, Range(0.1f, 1f)] private float lightingPitchIntensity = 1f;
+    // Safety ceiling on the final multiplier regardless of how many lamps
+    // are lit - 2 = one octave above the root.
+    [SerializeField, Min(1f)] private float lightingPitchMax = 2f;
 
     // set internal state variables
     // Lamps expose state so checkpoints and results can distinguish a unique
@@ -207,7 +219,7 @@ public sealed class LampController : MonoBehaviour
             lightingEffect.Play();
         }
         GameManager.instance?.HideLoadingBar();
-        PlayLightingSfx();
+        PlayLightingSfx(isRelight);
 
         // will tell the GameManager a lamp was lit
         GameManager.instance?.RegisterLampLit(this, isRelight);
@@ -242,9 +254,22 @@ public sealed class LampController : MonoBehaviour
         }
     }
 
-    private void PlayLightingSfx()
+    private void PlayLightingSfx(bool isRelight)
     {
-        float pitch = ComputeLightingPitch();
+        // The lamp that completes the level always resolves to a clean
+        // octave above the root instead of wherever the scale happened to
+        // land, and briefly ducks the ambience so the moment stands out.
+        bool isFinalLamp =
+            !isRelight &&
+            GameManager.instance != null &&
+            GameManager.instance.UniqueLampsLit + 1 >= GameManager.instance.TotalLamps;
+
+        float pitch = ComputeLightingPitch(isFinalLamp);
+
+        if (isFinalLamp)
+        {
+            GameManager.instance?.DuckAmbience();
+        }
 
         if (lightingAudioVariations != null)
         {
@@ -257,14 +282,32 @@ public sealed class LampController : MonoBehaviour
         }
     }
 
-    private float ComputeLightingPitch()
+    private float ComputeLightingPitch(bool isFinalLamp)
     {
-        // Rises a little with each unique lamp already lit this run, so the
-        // "acender" sound feels more triumphant the further along you are.
+        if (isFinalLamp)
+        {
+            return Mathf.Min(2f, lightingPitchMax);
+        }
+
+        // Climbs one scale degree per unique lamp already lit this run, so
+        // lighting lamps in sequence sounds like playing up a scale.
         // Relighting the same lamp after a gust does not count again -
         // UniqueLampsLit only tracks distinct lamp IDs.
+        if (pitchScaleSemitones == null || pitchScaleSemitones.Length == 0)
+        {
+            return 1f;
+        }
+
         int lampsLitSoFar = GameManager.instance != null ? GameManager.instance.UniqueLampsLit : 0;
-        return Mathf.Min(1f + lampsLitSoFar * lightingPitchStep, lightingPitchMax);
+        int degreeCount = pitchScaleSemitones.Length;
+        int octave = lampsLitSoFar / degreeCount;
+        int degree = lampsLitSoFar % degreeCount;
+        float semitonesAboveRoot = (pitchScaleSemitones[degree] + 12 * octave) * lightingPitchIntensity;
+
+        // Equal temperament: each semitone step is the 12th root of 2, so
+        // going up N semitones multiplies pitch/frequency by 2^(N/12).
+        float pitch = Mathf.Pow(2f, semitonesAboveRoot / 12f);
+        return Mathf.Min(pitch, lightingPitchMax);
     }
 
     private void UpdateVisualFeedback()
