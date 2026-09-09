@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -99,6 +100,7 @@ public sealed class ResultsPanel : MonoBehaviour
         continueButton?.gameObject.SetActive(false);
         levelSelectButton?.gameObject.SetActive(!levelOneDemoOnly);
         panel?.SetActive(true);
+        SelectDefaultButton();
     }
 
     private IEnumerator ShowRoutine(GameManager manager)
@@ -139,6 +141,15 @@ public sealed class ResultsPanel : MonoBehaviour
         }
 
         panel?.SetActive(true);
+        SelectDefaultButton();
+    }
+
+    private void SelectDefaultButton()
+    {
+        if (restartButton != null && restartButton.gameObject.activeInHierarchy)
+        {
+            EventSystem.current?.SetSelectedGameObject(restartButton.gameObject);
+        }
     }
 
     public void Restart()

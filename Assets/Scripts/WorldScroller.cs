@@ -12,6 +12,7 @@ public sealed class WorldScroller : MonoBehaviour
     public sealed class CheckpointSnapshot
     {
         public Vector3[][] layerPositions;
+        public Vector3[][] scatterLayerPositions;
         public Vector3[] finiteGroupPositions;
     }
 
@@ -29,6 +30,10 @@ public sealed class WorldScroller : MonoBehaviour
     [SerializeField] private Camera targetCamera;
     [SerializeField] private ScrollingLayer[] layers;
 
+    // Scattered scenery preserves its authored spacing while recycling in
+    // either direction across one shared world-width cycle.
+    [SerializeField] private LoopingScatterLayer[] scatterLayers;
+
     // Finite groups move with the world but are not recycled.
     // These will later contain trees, lamps, puddles, and bushes.
     [SerializeField] private FiniteScrollingGroup[] finiteGroups;
@@ -36,6 +41,9 @@ public sealed class WorldScroller : MonoBehaviour
     // These lists contain only references that passed validation.
     private readonly List<ScrollingLayer> activeLayers =
         new List<ScrollingLayer>();
+
+    private readonly List<LoopingScatterLayer> activeScatterLayers =
+        new List<LoopingScatterLayer>();
 
     private readonly List<FiniteScrollingGroup> activeFiniteGroups =
         new List<FiniteScrollingGroup>();
@@ -61,6 +69,17 @@ public sealed class WorldScroller : MonoBehaviour
         layers = scrollingLayers;
         finiteGroups = scrollingGroups;
         scrollSpeed = Mathf.Max(0f, speed);
+    }
+
+    public void Configure(
+        Camera cameraToUse,
+        ScrollingLayer[] scrollingLayers,
+        LoopingScatterLayer[] loopingScatterLayers,
+        FiniteScrollingGroup[] scrollingGroups,
+        float speed = 2f)
+    {
+        Configure(cameraToUse, scrollingLayers, scrollingGroups, speed);
+        scatterLayers = loopingScatterLayers;
     }
 
     public void ConfigurePlayerFollow(
@@ -122,17 +141,55 @@ public sealed class WorldScroller : MonoBehaviour
         // Require at least one looping layer or finite group.
         if (
             (layers == null || layers.Length == 0) &&
+            (scatterLayers == null || scatterLayers.Length == 0) &&
             (finiteGroups == null || finiteGroups.Length == 0)
         )
         {
             Debug.LogError(
                 "WorldScroller requires at least one " +
-                "scrolling layer or finite group.",
+                "scrolling layer, scatter layer, or finite group.",
                 this
             );
 
             enabled = false;
             return;
+        }
+
+
+        HashSet<LoopingScatterLayer> uniqueScatterLayers =
+            new HashSet<LoopingScatterLayer>();
+
+        if (scatterLayers != null)
+        {
+            foreach (LoopingScatterLayer layer in scatterLayers)
+            {
+                if (layer == null)
+                {
+                    Debug.LogWarning(
+                        "WorldScroller contains an empty scatter layer reference.",
+                        this);
+                    continue;
+                }
+
+                if (!uniqueScatterLayers.Add(layer))
+                {
+                    Debug.LogError(
+                        $"WorldScroller contains duplicate scatter layer '{layer.name}'.",
+                        this);
+                    continue;
+                }
+
+                if (layer.Initialize(targetCamera))
+                {
+                    activeScatterLayers.Add(layer);
+                }
+                else
+                {
+                    Debug.LogError(
+                        $"Failed to initialize scatter layer '{layer.name}'.",
+                        layer);
+                }
+            }
         }
 
         // Track references so a layer cannot be registered twice.
@@ -219,6 +276,7 @@ public sealed class WorldScroller : MonoBehaviour
         // Stop when every assigned reference failed validation.
         if (
             activeLayers.Count == 0 &&
+            activeScatterLayers.Count == 0 &&
             activeFiniteGroups.Count == 0
         )
         {
@@ -302,6 +360,11 @@ public sealed class WorldScroller : MonoBehaviour
             layer.Scroll(signedDistance);
         }
 
+        foreach (LoopingScatterLayer layer in activeScatterLayers)
+        {
+            layer.Scroll(signedDistance);
+        }
+
         // Send the same world distance to every finite group.
         // Finite groups move away and are not recycled.
         foreach (FiniteScrollingGroup group in activeFiniteGroups)
@@ -335,6 +398,7 @@ public sealed class WorldScroller : MonoBehaviour
         CheckpointSnapshot snapshot = new CheckpointSnapshot
         {
             layerPositions = new Vector3[activeLayers.Count][],
+            scatterLayerPositions = new Vector3[activeScatterLayers.Count][],
             finiteGroupPositions = new Vector3[activeFiniteGroups.Count]
         };
 
@@ -342,6 +406,12 @@ public sealed class WorldScroller : MonoBehaviour
         {
             snapshot.layerPositions[index] =
                 activeLayers[index].CaptureCheckpointPositions();
+        }
+
+        for (int index = 0; index < activeScatterLayers.Count; index++)
+        {
+            snapshot.scatterLayerPositions[index] =
+                activeScatterLayers[index].CaptureCheckpointPositions();
         }
 
         for (int index = 0; index < activeFiniteGroups.Count; index++)
@@ -364,7 +434,7 @@ public sealed class WorldScroller : MonoBehaviour
 
         int layerCount = Mathf.Min(
             activeLayers.Count,
-            snapshot.layerPositions.Length);
+            snapshot.layerPositions == null ? 0 : snapshot.layerPositions.Length);
 
         for (int index = 0; index < layerCount; index++)
         {
@@ -372,9 +442,23 @@ public sealed class WorldScroller : MonoBehaviour
                 snapshot.layerPositions[index]);
         }
 
+        int scatterCount = Mathf.Min(
+            activeScatterLayers.Count,
+            snapshot.scatterLayerPositions == null
+                ? 0
+                : snapshot.scatterLayerPositions.Length);
+
+        for (int index = 0; index < scatterCount; index++)
+        {
+            activeScatterLayers[index].RestoreCheckpointPositions(
+                snapshot.scatterLayerPositions[index]);
+        }
+
         int groupCount = Mathf.Min(
             activeFiniteGroups.Count,
-            snapshot.finiteGroupPositions.Length);
+            snapshot.finiteGroupPositions == null
+                ? 0
+                : snapshot.finiteGroupPositions.Length);
 
         for (int index = 0; index < groupCount; index++)
         {
@@ -389,6 +473,11 @@ public sealed class WorldScroller : MonoBehaviour
         StopScrolling();
 
         foreach (ScrollingLayer layer in activeLayers)
+        {
+            layer.ResetLayer();
+        }
+
+        foreach (LoopingScatterLayer layer in activeScatterLayers)
         {
             layer.ResetLayer();
         }
