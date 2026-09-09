@@ -29,6 +29,7 @@ public sealed class GameManager : MonoBehaviour
     [SerializeField] private bool activateDarknessOnLevelStart;
     [SerializeField] private GameHudController hud;
     [SerializeField] private ResultsPanel resultsPanel;
+    [SerializeField] private AmbientLayerController ambientLayers;
     [SerializeField] private bool canLoseFinalLife;
     [SerializeField, Min(1)] private int silverLampRequirement = 4;
 
@@ -252,6 +253,13 @@ public sealed class GameManager : MonoBehaviour
     public void HideLoadingBar()
     {
         hud?.HideLampProgress();
+    }
+
+    // Lets a one-off climactic SFX (e.g. the final lamp) briefly duck the
+    // ambience layers so it isn't fighting them for space in the mix.
+    public void DuckAmbience()
+    {
+        ambientLayers?.Duck();
     }
 
     // The opening demonstration teaches recovery without spending an orb.
