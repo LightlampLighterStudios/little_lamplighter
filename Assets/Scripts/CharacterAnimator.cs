@@ -1,8 +1,9 @@
 using UnityEngine;
 
-// Cycles the character's walk frames while moving, shows the idle sprite
-// while standing still, and swaps to the wet frame sets when SetWet(true)
-// is called (see CharacterWetState.cs).
+// Cycles the character's walk frames while moving, shows a still jump
+// sprite while airborne whilst shows the idle sprite while standing still and
+// swaps to the wet frame sets when SetWet(true) is called (see
+// CharacterWetState.cs)
 [RequireComponent(typeof(SpriteRenderer))]
 public sealed class CharacterAnimator : MonoBehaviour
 {
@@ -24,6 +25,12 @@ public sealed class CharacterAnimator : MonoBehaviour
     [SerializeField] private Sprite idleSprite;
     [SerializeField] private Sprite idleWetSprite;
 
+    [Header("Jump (shown while airborne, replaces the walk cycle)")]
+    [SerializeField] private Sprite jumpRightSprite;
+    [SerializeField] private Sprite jumpLeftSprite;
+    [SerializeField] private Sprite jumpRightWetSprite; // optional, leave empty if you don't have one yet
+    [SerializeField] private Sprite jumpLeftWetSprite;   // optional, leave empty if you don't have one yet
+
     [Header("Walk Right (3 frames)")]
     [SerializeField] private Sprite[] walkRightFrames = new Sprite[3];
     [SerializeField] private Sprite[] walkRightWetFrames = new Sprite[3];
@@ -37,6 +44,7 @@ public sealed class CharacterAnimator : MonoBehaviour
     [SerializeField, Min(0f)] private float moveThreshold = 0.05f;
 
     private bool isWet;
+    private bool facingRight = true;
     private int frameIndex;
     private float frameTimer;
 
@@ -75,6 +83,32 @@ public sealed class CharacterAnimator : MonoBehaviour
         float velocityX = player.Body.linearVelocity.x;
         bool moving = Mathf.Abs(velocityX) > moveThreshold;
 
+        // Remember which way he was last facing, since velocityX can be
+        // near zero mid-jump (e.g. jumping straight up over a puddle) This will help make things look more professional.
+        if (moving)
+        {
+            facingRight = velocityX > 0f;
+        }
+
+        // Airborne takes priority over everything else: freeze the walk
+        // cycle and show a single jump pose instead facing right wat
+        if (!player.IsGrounded)
+        {
+            frameIndex = 0;
+            frameTimer = 0f;
+
+            Sprite jumpSprite = facingRight
+                ? (isWet && jumpRightWetSprite != null ? jumpRightWetSprite : jumpRightSprite)
+                : (isWet && jumpLeftWetSprite != null ? jumpLeftWetSprite : jumpLeftSprite);
+
+            if (jumpSprite != null)
+            {
+                spriteRenderer.sprite = jumpSprite;
+            }
+
+            return;
+        }
+
         if (!moving)
         {
             // Standing still: reset the walk cycle and show the idle sprite.
@@ -87,7 +121,7 @@ public sealed class CharacterAnimator : MonoBehaviour
             return;
         }
 
-        // Advance the walk cycle at a fixed rate, independent of frame rate.
+        // Advance the walk cycle at a fixed rate independent of frame rate.
         frameTimer += Time.deltaTime;
 
         if (frameTimer >= secondsPerFrame)
@@ -96,11 +130,9 @@ public sealed class CharacterAnimator : MonoBehaviour
             frameIndex = (frameIndex + 1) % 3;
         }
 
-        bool walkingRight = velocityX > 0f;
-        // The left walk is the exact horizontal mirror of the right walk.
-        Sprite[] activeFrames = isWet ? walkRightWetFrames : walkRightFrames;
-        spriteRenderer.flipX = !walkingRight;
-        if (taperRenderer != null) taperRenderer.flipX = !walkingRight;
+        Sprite[] activeFrames = facingRight
+            ? (isWet ? walkRightWetFrames : walkRightFrames)
+            : (isWet ? walkLeftWetFrames : walkLeftFrames);
 
         if (activeFrames != null && activeFrames.Length == 3 && activeFrames[frameIndex] != null)
         {
@@ -112,8 +144,8 @@ public sealed class CharacterAnimator : MonoBehaviour
                         ? rightTaperAngles[frameIndex]
                         : 0f;
                 AttachTaper(rightHands[frameIndex],
-                    walkingRight ? rightAngle : -rightAngle,
-                    walkingRight);
+                    facingRight ? rightAngle : -rightAngle,
+                    facingRight);
             }
         }
     }
