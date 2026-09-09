@@ -1674,6 +1674,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldScroller: {fileID: 0}
   backwardScrollCompensation: 1
+  playerFollowSpeedMultiplier: 1
   moveSpeed: 5
   jumpForce: 12
   minX: -27
@@ -1740,6 +1741,10 @@ MonoBehaviour:
   player: {fileID: 0}
   idleSprite: {fileID: 21300000, guid: 72f7f280385b745d3acfdafab31f404c, type: 3}
   idleWetSprite: {fileID: 21300000, guid: 14a35222899154d8aa2699fda4a4c9f3, type: 3}
+  jumpRightSprite: {fileID: 21300000, guid: e0b07bbed7cb5447cb32b19d3dc23b80, type: 3}
+  jumpLeftSprite: {fileID: 21300000, guid: 554005f5baece4da88eb0ba3db5bc9bb, type: 3}
+  jumpRightWetSprite: {fileID: 21300000, guid: d4e973cb9edb54657a702b9d23399bc7, type: 3}
+  jumpLeftWetSprite: {fileID: 21300000, guid: 746bad1e573fc4e829209d91b5aee6e6, type: 3}
   walkRightFrames:
   - {fileID: 21300000, guid: e0b07bbed7cb5447cb32b19d3dc23b80, type: 3}
   - {fileID: 21300000, guid: b2180da580af84d74af213f9d727caa4, type: 3}
@@ -2308,10 +2313,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lampId: Lamp
+  lampType: 0
   unlitSprite: {fileID: 21300000, guid: 9948c2911cc954cf6a1e3d95a3b512bf, type: 3}
   litSprite: {fileID: 21300000, guid: adbf9711c54514c31b5ab776b0c2bc32, type: 3}
   timeToLight: 0.1
+  firstLightSparkReward: 1
+  relightSparkReward: 1
+  darknessPushMultiplier: 1
   isLit: 0
+  lightingEffect: {fileID: 0}
+  extinguishEffect: {fileID: 0}
+  castingAudio: {fileID: 0}
+  castingAudioVariations: {fileID: 0}
+  lightingAudio: {fileID: 0}
+  lightingAudioVariations: {fileID: 0}
+  pitchScaleSemitones: 0000000002000000040000000500000007000000090000000a000000
+  lightingPitchIntensity: 1
+  lightingPitchMax: 2
 --- !u!61 &661801602
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3708,10 +3726,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lampId: Lamp
+  lampType: 0
   unlitSprite: {fileID: 21300000, guid: 31c327b419e30479da70569deec5b870, type: 3}
   litSprite: {fileID: 21300000, guid: bcbf4a9c9b5024cfb9ed1ead790f26cf, type: 3}
   timeToLight: 0.1
+  firstLightSparkReward: 1
+  relightSparkReward: 1
+  darknessPushMultiplier: 1
   isLit: 0
+  lightingEffect: {fileID: 0}
+  extinguishEffect: {fileID: 0}
+  castingAudio: {fileID: 0}
+  castingAudioVariations: {fileID: 0}
+  lightingAudio: {fileID: 0}
+  lightingAudioVariations: {fileID: 0}
+  pitchScaleSemitones: 0000000002000000040000000500000007000000090000000a000000
+  lightingPitchIntensity: 1
+  lightingPitchMax: 2
 --- !u!61 &1473481614
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4054,6 +4085,7 @@ MonoBehaviour:
   activateDarknessOnLevelStart: 0
   hud: {fileID: 0}
   resultsPanel: {fileID: 0}
+  ambientLayers: {fileID: 0}
   canLoseFinalLife: 0
   silverLampRequirement: 4
   sparks: 0
@@ -4315,10 +4347,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lampId: Lamp
+  lampType: 0
   unlitSprite: {fileID: 21300000, guid: b476e1123eaf04d3c89a394492608101, type: 3}
   litSprite: {fileID: 21300000, guid: 5e219c57f77ac44a38c6b4f495ce4c14, type: 3}
   timeToLight: 0.1
+  firstLightSparkReward: 1
+  relightSparkReward: 1
+  darknessPushMultiplier: 1
   isLit: 0
+  lightingEffect: {fileID: 0}
+  extinguishEffect: {fileID: 0}
+  castingAudio: {fileID: 0}
+  castingAudioVariations: {fileID: 0}
+  lightingAudio: {fileID: 0}
+  lightingAudioVariations: {fileID: 0}
+  pitchScaleSemitones: 0000000002000000040000000500000007000000090000000a000000
+  lightingPitchIntensity: 1
+  lightingPitchMax: 2
 --- !u!61 &1678412970
 BoxCollider2D:
   m_ObjectHideFlags: 0
