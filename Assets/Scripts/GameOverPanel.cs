@@ -160,6 +160,7 @@ public sealed class GameOverPanel : MonoBehaviour
 
     public void ReturnToLevelSelect()
     {
+        MainMenuController.RequestLevelSelect();
         Navigate(levelSelectScene);
     }
 

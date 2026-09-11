@@ -23,6 +23,7 @@ public sealed class PlayerController : MonoBehaviour
     private float speedMultiplier = 1f;
     private bool grounded = true;
     private bool controlsEnabled = true;
+    private bool movementEnabled = true;
     private Coroutine slowRoutine;
 
     // Stores whether the player is currently holding the interact button.
@@ -87,7 +88,7 @@ public sealed class PlayerController : MonoBehaviour
         }
 
         body.linearVelocity = new Vector2(
-            controlsEnabled ? moveInput * horizontalSpeed : 0f,
+            controlsEnabled && movementEnabled ? moveInput * horizontalSpeed : 0f,
             body.linearVelocity.y);
 
         // keep him inside the allowed zone we don't want our littleLamplighter walking of the screen
@@ -154,11 +155,22 @@ public sealed class PlayerController : MonoBehaviour
     public void SetControlsEnabled(bool enabled)
     {
         controlsEnabled = enabled;
+        movementEnabled = enabled;
 
         if (!enabled)
         {
             moveInput = 0f;
             InteractHeld = false;
+        }
+    }
+
+    public void SetMovementEnabled(bool enabled)
+    {
+        movementEnabled = enabled;
+
+        if (!enabled && body != null)
+        {
+            body.linearVelocity = new Vector2(0f, body.linearVelocity.y);
         }
     }
 
