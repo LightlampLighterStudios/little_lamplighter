@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,13 @@ public enum WorldScrollMode
 
 public sealed class WorldScroller : MonoBehaviour
 {
+    // Visual-only layers can follow the exact distance applied to the world
+    // without taking over gameplay scrolling or camera logic.
+    public event Action<float> WorldScrolled;
+    public event Action WorldCheckpointCaptured;
+    public event Action WorldCheckpointRestored;
+    public event Action WorldReset;
+
     public sealed class CheckpointSnapshot
     {
         public Vector3[][] layerPositions;
@@ -379,6 +387,8 @@ public sealed class WorldScroller : MonoBehaviour
         {
             playerFollowDarkness?.ApplyWorldScroll(signedDistance);
         }
+
+        WorldScrolled?.Invoke(signedDistance);
     }
 
     // Starts the world and the finite gameplay content.
@@ -420,6 +430,7 @@ public sealed class WorldScroller : MonoBehaviour
                 activeFiniteGroups[index].CaptureCheckpointPosition();
         }
 
+        WorldCheckpointCaptured?.Invoke();
         return snapshot;
     }
 
@@ -465,6 +476,8 @@ public sealed class WorldScroller : MonoBehaviour
             activeFiniteGroups[index].RestoreCheckpointPosition(
                 snapshot.finiteGroupPositions[index]);
         }
+
+        WorldCheckpointRestored?.Invoke();
     }
 
     // Returns every registered layer to its starting arrangement.
@@ -486,5 +499,7 @@ public sealed class WorldScroller : MonoBehaviour
         {
             group.ResetGroup();
         }
+
+        WorldReset?.Invoke();
     }
 }
