@@ -130,9 +130,20 @@ public sealed class CharacterAnimator : MonoBehaviour
             frameIndex = (frameIndex + 1) % 3;
         }
 
-        Sprite[] activeFrames = facingRight
-            ? (isWet ? walkRightWetFrames : walkRightFrames)
-            : (isWet ? walkLeftWetFrames : walkLeftFrames);
+        Sprite[] rightFrames = isWet ? walkRightWetFrames : walkRightFrames;
+        Sprite[] leftFrames = isWet ? walkLeftWetFrames : walkLeftFrames;
+        bool hasDistinctLeftFrames = HasDistinctFrames(leftFrames, rightFrames);
+
+        // Several authored scenes point both walk directions at the same
+        // right-facing artwork. Mirror that artwork while moving left so the
+        // character's feet face the direction of travel instead of moonwalking.
+        bool mirrorRightArtwork = !facingRight && !hasDistinctLeftFrames;
+        spriteRenderer.flipX = mirrorRightArtwork;
+        if (taperRenderer != null) taperRenderer.flipX = mirrorRightArtwork;
+
+        Sprite[] activeFrames = facingRight || !hasDistinctLeftFrames
+            ? rightFrames
+            : leftFrames;
 
         if (activeFrames != null && activeFrames.Length == 3 && activeFrames[frameIndex] != null)
         {
@@ -148,6 +159,26 @@ public sealed class CharacterAnimator : MonoBehaviour
                     facingRight);
             }
         }
+    }
+
+    private static bool HasDistinctFrames(Sprite[] leftFrames, Sprite[] rightFrames)
+    {
+        if (leftFrames == null || leftFrames.Length != 3)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < leftFrames.Length; index++)
+        {
+            if (leftFrames[index] != null &&
+                (rightFrames == null || index >= rightFrames.Length ||
+                 leftFrames[index] != rightFrames[index]))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void AttachTaper(Vector2 hand, float angle, bool behindCharacter)

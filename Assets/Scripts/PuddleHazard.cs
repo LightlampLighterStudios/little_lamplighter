@@ -30,6 +30,19 @@ public sealed class PuddleHazard : MonoBehaviour
         }
         splashVariations = GetComponent<AudioClipVariations>();
         puddleRenderer = GetComponent<SpriteRenderer>();
+        if (puddleRenderer == null || !puddleRenderer.enabled)
+        {
+            foreach (SpriteRenderer childRenderer in GetComponentsInChildren<SpriteRenderer>(true))
+            {
+                if (!childRenderer.enabled || childRenderer.sprite == null)
+                {
+                    continue;
+                }
+
+                puddleRenderer = childRenderer;
+                break;
+            }
+        }
         restingScale = transform.localScale;
         restingColour = puddleRenderer != null ? puddleRenderer.color : Color.white;
     }
