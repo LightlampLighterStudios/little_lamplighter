@@ -4868,6 +4868,8 @@ Transform:
   - {fileID: 900000000010003}
   - {fileID: 900000000010006}
   - {fileID: 900000000010009}
+  m_Father: {fileID: 6052112830809858188}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &900000000010011
 GameObject:
   m_ObjectHideFlags: 0
@@ -4900,6 +4902,8 @@ Transform:
   - {fileID: 900000000010014}
   - {fileID: 900000000010017}
   - {fileID: 900000000010020}
+  m_Father: {fileID: 6052112830809858188}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &900000000010002
 GameObject:
   m_ObjectHideFlags: 0
