@@ -57279,8 +57279,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldScroller: {fileID: 106466130}
   backwardScrollCompensation: 1.5
-  playerFollowSpeedMultiplier: 1
-  moveSpeed: 5
+  playerFollowSpeedMultiplier: 0.6
+  moveSpeed: 12
   jumpForce: 15
   minX: -27
   maxX: 27
@@ -156825,6 +156825,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 1.1332964
+      objectReference: {fileID: 0}
+    - target: {fileID: 5634432055681690533, guid: d0d0230419fb1374a96d380b37f70517,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 12.88
       objectReference: {fileID: 0}
     - target: {fileID: 5660812914707348194, guid: d0d0230419fb1374a96d380b37f70517,
         type: 3}
