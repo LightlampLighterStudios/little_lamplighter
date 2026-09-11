@@ -17,6 +17,7 @@ public sealed class ResultsDisplay : MonoBehaviour
     [SerializeField] private Text lampsValueText;
 
     [Header("Sparks row")]
+    [SerializeField] private Text sparksValueText;
 
 
     [Header("Trophy")]
