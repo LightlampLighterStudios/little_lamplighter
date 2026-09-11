@@ -106812,10 +106812,10 @@ MonoBehaviour:
   player: {fileID: 445935889}
   gameManager: {fileID: 1604115131}
   darkness: {fileID: 2095896194}
-  advanceSpeed: 2
+  advanceSpeed: 8
   pushBackDistance: 15
   resetX: -53
-  clampTrailingDistance: 0
+  clampTrailingDistance: 1
   maximumTrailingDistance: 24
   tutorialCaptureDistance: 14
   tutorialCaptureOverlap: 20
