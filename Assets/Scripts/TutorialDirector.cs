@@ -71,6 +71,19 @@ public sealed class TutorialDirector : MonoBehaviour
     private bool respawning;
     private string defaultLampPromptText;
 
+    private bool IsLampMovementLocked()
+    {
+        return
+            state == TutorialState.WaitingForDarknessRecoveryLamp ||
+            state == TutorialState.WaitingForFirstLamp ||
+            state == TutorialState.WaitingForGustLamp;
+    }
+
+    private void ApplyLampMovementLock()
+    {
+        player?.SetMovementEnabled(!IsLampMovementLocked());
+    }
+
     private void Start()
     {
         gameManager.LevelStartedEvent += NotifyLevelStarted;
@@ -100,6 +113,7 @@ public sealed class TutorialDirector : MonoBehaviour
         }
 
         latestCheckpoint = CaptureCheckpoint();
+        ApplyLampMovementLock();
     }
 
     private void OnDestroy()
@@ -172,6 +186,8 @@ public sealed class TutorialDirector : MonoBehaviour
             state = TutorialState.NormalPlay;
             latestCheckpoint = CaptureCheckpoint();
         }
+
+        ApplyLampMovementLock();
     }
 
     public void EnterSection(TutorialSectionType sectionType)
@@ -186,6 +202,7 @@ public sealed class TutorialDirector : MonoBehaviour
             case TutorialSectionType.FirstLamp:
                 if (state == TutorialState.WaitingForDarknessRecoveryLamp)
                 {
+                    ApplyLampMovementLock();
                     gameManager.PauseWorld();
                     ResetLampPromptText();
                     lampPrompt?.SetActive(true);
@@ -194,6 +211,7 @@ public sealed class TutorialDirector : MonoBehaviour
 
                 latestCheckpoint = CaptureCheckpoint();
                 state = TutorialState.WaitingForFirstLamp;
+                ApplyLampMovementLock();
                 gameManager.PauseWorld();
                 lampPrompt?.SetActive(true);
                 break;
@@ -217,6 +235,7 @@ public sealed class TutorialDirector : MonoBehaviour
                 if (gustLamp.IsLit)
                 {
                     state = TutorialState.NormalPlay;
+                    ApplyLampMovementLock();
                     lampPrompt?.SetActive(false);
                     latestCheckpoint = CaptureCheckpoint();
                     gameManager.ResumeWorld();
@@ -224,6 +243,7 @@ public sealed class TutorialDirector : MonoBehaviour
                 }
 
                 state = TutorialState.WaitingForGustLamp;
+                ApplyLampMovementLock();
                 gameManager.PauseWorld();
                 ResetLampPromptText();
                 lampPrompt?.SetActive(true);
@@ -270,6 +290,7 @@ public sealed class TutorialDirector : MonoBehaviour
     public void HideAllPrompts()
     {
         state = TutorialState.Complete;
+        ApplyLampMovementLock();
         firstLamp?.SetTutorialHighlighted(false);
         movementPrompt?.SetActive(false);
         lampPrompt?.SetActive(false);
@@ -311,6 +332,7 @@ public sealed class TutorialDirector : MonoBehaviour
         // A pending fade must never restore movement or checkpoints after failure.
         StopAllCoroutines();
         respawning = false;
+        ApplyLampMovementLock();
         if (fadeOverlay != null)
         {
             SetFadeAlpha(0f);
@@ -391,6 +413,7 @@ public sealed class TutorialDirector : MonoBehaviour
             ResetLampPromptText();
             darkness.SetActiveThreat(true);
             state = TutorialState.NormalPlay;
+            ApplyLampMovementLock();
             latestCheckpoint = CaptureCheckpoint();
             gameManager.ResumeWorld();
             return;
@@ -400,6 +423,7 @@ public sealed class TutorialDirector : MonoBehaviour
         {
             relightPrompt?.SetActive(false);
             state = TutorialState.NormalPlay;
+            ApplyLampMovementLock();
             latestCheckpoint = CaptureCheckpoint();
             gameManager.ResumeWorld();
         }
@@ -408,6 +432,7 @@ public sealed class TutorialDirector : MonoBehaviour
         {
             lampPrompt?.SetActive(false);
             state = TutorialState.NormalPlay;
+            ApplyLampMovementLock();
             latestCheckpoint = CaptureCheckpoint();
             gameManager.ResumeWorld();
         }
@@ -479,6 +504,7 @@ public sealed class TutorialDirector : MonoBehaviour
         }
 
         state = stateAfterRespawn;
+        ApplyLampMovementLock();
         jumpPrompt?.SetActive(state == TutorialState.WaitingForPuddlePractice);
         lampPrompt?.SetActive(state == TutorialState.WaitingForDarknessRecoveryLamp);
         relightPrompt?.SetActive(false);
@@ -491,6 +517,7 @@ public sealed class TutorialDirector : MonoBehaviour
 
         yield return FadeTo(0f);
         player.SetControlsEnabled(true);
+        ApplyLampMovementLock();
         respawning = false;
 
         if (resumeWorldAfterRespawn)

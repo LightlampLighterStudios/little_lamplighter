@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: 0d8beaa888b834912abcd2843cc35370
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1609293535625098225
+    second: taper_pole_wet 2_0
+  - first:
+      213: 8787440036226161851
+    second: taper_pole_wet 2_1
+  - first:
+      213: 7881521248965565736
+    second: taper_pole_wet 2_2
+  - first:
+      213: -8504475122423336442
+    second: taper_pole_wet 2_3
+  - first:
+      213: 2598480125489838892
+    second: taper_pole_wet 2_4
+  - first:
+      213: 5567935424121313419
+    second: taper_pole_wet 2_5
+  - first:
+      213: 715002642195539965
+    second: taper_pole_wet 2_6
+  - first:
+      213: -6944219216062852796
+    second: taper_pole_wet 2_7
+  - first:
+      213: -8470082098148155739
+    second: taper_pole_wet 2_8
+  - first:
+      213: -6666431022623546695
+    second: taper_pole_wet 2_9
+  - first:
+      213: -3013065597125551380
+    second: taper_pole_wet 2_10
+  - first:
+      213: -4420276907479872476
+    second: taper_pole_wet 2_11
+  - first:
+      213: 250695929288343962
+    second: taper_pole_wet 2_12
+  - first:
+      213: 4302224623328224049
+    second: taper_pole_wet 2_13
+  - first:
+      213: -3611451453639824572
+    second: taper_pole_wet 2_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: taper_pole_wet 2_0
+      rect:
+        serializedVersion: 2
+        x: 721
+        y: 1345
+        width: 113
+        height: 172
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f3344ab1fb555610800000000000000
+      internalID: 1609293535625098225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_1
+      rect:
+        serializedVersion: 2
+        x: 844
+        y: 1445
+        width: 28
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbc5e44b72243f970800000000000000
+      internalID: 8787440036226161851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_2
+      rect:
+        serializedVersion: 2
+        x: 885
+        y: 1365
+        width: 117
+        height: 154
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82d194e51d9c06d60800000000000000
+      internalID: 7881521248965565736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_3
+      rect:
+        serializedVersion: 2
+        x: 945
+        y: 1362
+        width: 107
+        height: 100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6027fce4fe80af980800000000000000
+      internalID: -8504475122423336442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_4
+      rect:
+        serializedVersion: 2
+        x: 674
+        y: 1322
+        width: 115
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2bfbb328e7af0420800000000000000
+      internalID: 2598480125489838892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_5
+      rect:
+        serializedVersion: 2
+        x: 848
+        y: 1341
+        width: 24
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b88901f94c7454d40800000000000000
+      internalID: 5567935424121313419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_6
+      rect:
+        serializedVersion: 2
+        x: 878
+        y: 1354
+        width: 31
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df7e7856d133ce900800000000000000
+      internalID: 715002642195539965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_7
+      rect:
+        serializedVersion: 2
+        x: 944
+        y: 1291
+        width: 178
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 441d1204a6d21af90800000000000000
+      internalID: -6944219216062852796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_8
+      rect:
+        serializedVersion: 2
+        x: 843
+        y: 1339
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5aedb794539347a80800000000000000
+      internalID: -8470082098148155739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_9
+      rect:
+        serializedVersion: 2
+        x: 655
+        y: 1332
+        width: 10
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b221e02e441c73a0800000000000000
+      internalID: -6666431022623546695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_10
+      rect:
+        serializedVersion: 2
+        x: 841
+        y: 1324
+        width: 16
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cea9166adc07f26d0800000000000000
+      internalID: -3013065597125551380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_11
+      rect:
+        serializedVersion: 2
+        x: 910
+        y: 1329
+        width: 15
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42cccc0829508a2c0800000000000000
+      internalID: -4420276907479872476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_12
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 1275
+        width: 95
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a914ed39e96aa7300800000000000000
+      internalID: 250695929288343962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_13
+      rect:
+        serializedVersion: 2
+        x: 689
+        y: 15
+        width: 355
+        height: 1308
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 133ea61308294bb30800000000000000
+      internalID: 4302224623328224049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: taper_pole_wet 2_14
+      rect:
+        serializedVersion: 2
+        x: 1005
+        y: 1218
+        width: 142
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44bea36890c81edc0800000000000000
+      internalID: -3611451453639824572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      taper_pole_wet 2_0: 1609293535625098225
+      taper_pole_wet 2_1: 8787440036226161851
+      taper_pole_wet 2_10: -3013065597125551380
+      taper_pole_wet 2_11: -4420276907479872476
+      taper_pole_wet 2_12: 250695929288343962
+      taper_pole_wet 2_13: 4302224623328224049
+      taper_pole_wet 2_14: -3611451453639824572
+      taper_pole_wet 2_2: 7881521248965565736
+      taper_pole_wet 2_3: -8504475122423336442
+      taper_pole_wet 2_4: 2598480125489838892
+      taper_pole_wet 2_5: 5567935424121313419
+      taper_pole_wet 2_6: 715002642195539965
+      taper_pole_wet 2_7: -6944219216062852796
+      taper_pole_wet 2_8: -8470082098148155739
+      taper_pole_wet 2_9: -6666431022623546695
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

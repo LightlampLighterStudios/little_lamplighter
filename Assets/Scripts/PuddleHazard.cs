@@ -9,6 +9,7 @@ public sealed class PuddleHazard : MonoBehaviour
     [SerializeField, Range(0.05f, 1f)] private float speedMultiplier = 0.4f;
     [SerializeField, Min(0f)] private float slowDuration = 2f;
     [SerializeField] private AudioSource splashAudio;
+    [SerializeField] private ParticleSystem splashEffect;
 
     private AudioClipVariations splashVariations;
     private bool occupied;
@@ -29,6 +30,19 @@ public sealed class PuddleHazard : MonoBehaviour
         }
         splashVariations = GetComponent<AudioClipVariations>();
         puddleRenderer = GetComponent<SpriteRenderer>();
+        if (puddleRenderer == null || !puddleRenderer.enabled)
+        {
+            foreach (SpriteRenderer childRenderer in GetComponentsInChildren<SpriteRenderer>(true))
+            {
+                if (!childRenderer.enabled || childRenderer.sprite == null)
+                {
+                    continue;
+                }
+
+                puddleRenderer = childRenderer;
+                break;
+            }
+        }
         restingScale = transform.localScale;
         restingColour = puddleRenderer != null ? puddleRenderer.color : Color.white;
     }
@@ -74,6 +88,7 @@ public sealed class PuddleHazard : MonoBehaviour
         {
             splashAudio.Play();
         }
+        splashEffect.Play();
         splashRoutine = StartCoroutine(PlaySplashFeedback());
         player.ApplySlow(speedMultiplier, slowDuration);
         PlayerEntered?.Invoke(this, player);

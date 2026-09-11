@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -17,7 +18,7 @@ public sealed class ResultsPanel : MonoBehaviour
     [SerializeField] private PlayerController player;
     [SerializeField] private bool levelOneDemoOnly;
     [SerializeField] private string continueScene = "Elliot_Level2";
-    [SerializeField] private string levelSelectScene = "TemporaryLevelSelect";
+    [SerializeField] private string levelSelectScene = "Cayla_MainMenu";
     [SerializeField, Min(0f)] private float runOffDuration = 1.1f;
     [SerializeField, Min(0f)] private float runOffSpeed = 12f;
 
@@ -38,7 +39,7 @@ public sealed class ResultsPanel : MonoBehaviour
         Button returnToSelect,
         PlayerController targetPlayer,
         string nextScene = "Elliot_Level2",
-        string selectScene = "TemporaryLevelSelect")
+        string selectScene = "Cayla_MainMenu")
     {
         panel = rootPanel;
         medalText = medal;
@@ -99,6 +100,7 @@ public sealed class ResultsPanel : MonoBehaviour
         continueButton?.gameObject.SetActive(false);
         levelSelectButton?.gameObject.SetActive(!levelOneDemoOnly);
         panel?.SetActive(true);
+        SelectDefaultButton();
     }
 
     private IEnumerator ShowRoutine(GameManager manager)
@@ -139,6 +141,15 @@ public sealed class ResultsPanel : MonoBehaviour
         }
 
         panel?.SetActive(true);
+        SelectDefaultButton();
+    }
+
+    private void SelectDefaultButton()
+    {
+        if (restartButton != null && restartButton.gameObject.activeInHierarchy)
+        {
+            EventSystem.current?.SetSelectedGameObject(restartButton.gameObject);
+        }
     }
 
     public void Restart()
@@ -153,6 +164,7 @@ public sealed class ResultsPanel : MonoBehaviour
 
     public void LevelSelect()
     {
+        MainMenuController.RequestLevelSelect();
         SceneManager.LoadScene(levelSelectScene);
     }
 }

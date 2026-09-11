@@ -7,6 +7,7 @@ public sealed class SkyProgressController : MonoBehaviour
     [SerializeField] private GameManager gameManager;
     [SerializeField] private SpriteRenderer moon;
     [SerializeField] private SpriteRenderer stars;
+    [SerializeField] private SpriteRenderer[] additionalStars;
 
     // The moon fades in between 25% and 55% night progress.
     [Header("Moon Fade")]
@@ -21,6 +22,7 @@ public sealed class SkyProgressController : MonoBehaviour
     // Preserve each sprite's original colour while changing alpha.
     private Color moonBaseColor = Color.white;
     private Color starsBaseColor = Color.white;
+    private Color[] additionalStarsBaseColors;
 
     private void Awake()
     {
@@ -34,6 +36,15 @@ public sealed class SkyProgressController : MonoBehaviour
         if (stars != null)
         {
             starsBaseColor = stars.color;
+        }
+
+        int additionalCount = additionalStars == null ? 0 : additionalStars.Length;
+        additionalStarsBaseColors = new Color[additionalCount];
+        for (int index = 0; index < additionalCount; index++)
+        {
+            additionalStarsBaseColors[index] = additionalStars[index] == null
+                ? Color.white
+                : additionalStars[index].color;
         }
     }
 
@@ -68,6 +79,14 @@ public sealed class SkyProgressController : MonoBehaviour
 
         SetAlpha(moon, moonBaseColor, moonAlpha);
         SetAlpha(stars, starsBaseColor, starsAlpha);
+
+        for (int index = 0; index < additionalStarsBaseColors.Length; index++)
+        {
+            SetAlpha(
+                additionalStars[index],
+                additionalStarsBaseColors[index],
+                starsAlpha);
+        }
     }
 
     private static void SetAlpha(
