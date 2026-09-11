@@ -417,7 +417,7 @@ MonoBehaviour:
   player: {fileID: 445935891}
   levelOneDemoOnly: 0
   continueScene: Soulie_Level3
-  levelSelectScene: TemporaryLevelSelect
+  levelSelectScene: Cayla_MainMenu
   runOffDuration: 1.1
   runOffSpeed: 12
 --- !u!114 &30577733
