@@ -5114,8 +5114,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResultsPanel
   panel: {fileID: 1549018168}
-  gameOverPrefab: {fileID: 0}
-  titleText: {fileID: 100619608}
+  gameOverPrefab: {fileID: 5597714178177757735, guid: c7298a208214a22489a72abf95ca533e,
+    type: 3}  titleText: {fileID: 100619608}
   medalText: {fileID: 222138862}
   statisticsText: {fileID: 1008205894}
   restartButton: {fileID: 963380164}

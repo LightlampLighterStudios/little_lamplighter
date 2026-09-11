@@ -158038,7 +158038,6 @@ GameObject:
   - component: {fileID: 2300000010}
   - component: {fileID: 2300000011}
   - component: {fileID: 2300000012}
-  - component: {fileID: 2300000013}
   m_Layer: 0
   m_Name: Puddle_Added_02
   m_TagString: Untagged
