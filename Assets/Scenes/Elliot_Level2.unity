@@ -43261,7 +43261,7 @@ MonoBehaviour:
   tutorialPuddle: 0
   speedMultiplier: 0.4
   slowDuration: 2
-  splashAudio: {fileID: 0}
+  splashAudio: {fileID: 582509311}
   splashEffect: {fileID: 512151319}
 --- !u!61 &582509310
 BoxCollider2D:
@@ -166560,7 +166560,7 @@ MonoBehaviour:
   tutorialPuddle: 0
   speedMultiplier: 0.4
   slowDuration: 2
-  splashAudio: {fileID: 0}
+  splashAudio: {fileID: 2105128989}
   splashEffect: {fileID: 30578304}
 --- !u!61 &2105128988
 BoxCollider2D:
@@ -166596,7 +166596,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.18937159, y: 0.3849424}
+  m_Offset: {x: -0.85080206, y: 0.38494253}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -166606,7 +166606,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 5.9523687, y: 4.0107803}
+  m_Size: {x: 4.629508, y: 4.0107803}
   m_EdgeRadius: 0
 --- !u!82 &2105128989
 AudioSource:
@@ -167397,6 +167397,7 @@ GameObject:
   - component: {fileID: 2300000010}
   - component: {fileID: 2300000011}
   - component: {fileID: 2300000012}
+  - component: {fileID: 2300000013}
   m_Layer: 0
   m_Name: Puddle_Added_02
   m_TagString: Untagged
@@ -167639,6 +167640,30 @@ MonoBehaviour:
   slowDuration: 2
   splashAudio: {fileID: 0}
   splashEffect: {fileID: 0}
+--- !u!114 &2300000013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2300000007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62f4df45b080a466397584f4fbdd4bd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SplashEffectSpawner
+  splashSprites:
+  - {fileID: 21300000, guid: 547cc7389c8ce4598be8814a89f81d83, type: 3}
+  - {fileID: 21300000, guid: 27ecaf93d8e1844f4bb0d731f10b76ce, type: 3}
+  - {fileID: 21300000, guid: 611aaece674f6478883d6fe858a1a22d, type: 3}
+  - {fileID: 21300000, guid: 583bd953185f544408067273f3c93a1f, type: 3}
+  - {fileID: 21300000, guid: f734df3a3d537471fab0976fee4e1ce7, type: 3}
+  - {fileID: 21300000, guid: 83d9ba72ab34446ce9273bad965745ec, type: 3}
+  splashLifetime: 0.4
+  splashOffset: {x: 0, y: 0, z: 0}
+  splashSortingOrder: 5
+  splashWidthRatio: 1
+  targetScaleMultiplier: 1.5
 --- !u!1001 &7579629868938918479
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -169137,7 +169162,7 @@ MonoBehaviour:
   tutorialPuddle: 0
   speedMultiplier: 0.4
   slowDuration: 2
-  splashAudio: {fileID: 0}
+  splashAudio: {fileID: 7579629868938918490}
   splashEffect: {fileID: 1551035812}
 --- !u!61 &7579629868938918487
 BoxCollider2D:
@@ -169173,7 +169198,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.26100588, y: -0.27558184}
+  m_Offset: {x: -0.7351477, y: -0.27558184}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -169183,7 +169208,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 5.8892813, y: 5}
+  m_Size: {x: 4.596177, y: 5}
   m_EdgeRadius: 0
 --- !u!114 &7579629868938918488
 MonoBehaviour:
