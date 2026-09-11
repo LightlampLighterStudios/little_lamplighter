@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public sealed class ResultsPanel : MonoBehaviour
 {
+    private const string ResultsSceneName = "Cayla_Results";
+
     [SerializeField] private GameObject panel;
     [SerializeField] private GameOverPanel gameOverPrefab;
     private GameOverPanel gameOverInstance;
@@ -125,6 +127,27 @@ public sealed class ResultsPanel : MonoBehaviour
                 player.transform.position += Vector3.right * runOffSpeed * Time.deltaTime;
                 yield return null;
             }
+        }
+
+        // The redesigned results screen is a standalone scene. Preserve the
+        // live level result and navigation targets before leaving this scene.
+        // If the scene is not in the build, retain the original overlay below
+        // as a safe fallback instead of leaving the player on a blank screen.
+        if (Application.CanStreamedLevelBeLoaded(ResultsSceneName))
+        {
+            ResultsSession.Store(
+                manager.UniqueLampsLit,
+                manager.TotalLamps,
+                manager.Sparks,
+                manager.GetMedal(),
+                SceneManager.GetActiveScene().name,
+                continueScene,
+                levelSelectScene,
+                !levelOneDemoOnly && !string.IsNullOrWhiteSpace(continueScene),
+                !levelOneDemoOnly);
+
+            SceneManager.LoadScene(ResultsSceneName);
+            yield break;
         }
 
         if (medalText != null)

@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Cayla_MainMenu.unity
     guid: e300907aec2fc45beb98ef3126e21f33
   - enabled: 1
+    path: Assets/Scenes/Cayla_Results.unity
+    guid: 830461ac55b0041dab899d6da134a422
+  - enabled: 1
     path: Assets/Scenes/Soulie_Level1.unity
     guid: cba4ebcc9b40d264382b3d301348ea15
   - enabled: 1
