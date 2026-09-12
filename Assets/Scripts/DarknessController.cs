@@ -23,8 +23,10 @@ public sealed class DarknessController : MonoBehaviour
     private bool contactLocked;
     private Coroutine retreatRoutine;
     private float trailingDistanceAllowance;
+    private bool motionPaused;
 
     public bool IsActiveThreat => activeThreat;
+    public bool IsMotionPaused => motionPaused;
 
     private void Awake()
     {
@@ -81,6 +83,7 @@ public sealed class DarknessController : MonoBehaviour
     private void Update()
     {
         if (
+            motionPaused ||
             !activeThreat ||
             gameManager == null ||
             !gameManager.IsClockRunning)
@@ -144,6 +147,15 @@ public sealed class DarknessController : MonoBehaviour
         {
             trailingDistanceAllowance = 0f;
         }
+    }
+
+    /// <summary>
+    /// Freezes normal advance and any authored unscaled-time darkness motion
+    /// without cancelling the active tutorial or retreat coroutine.
+    /// </summary>
+    public void SetMotionPaused(bool paused)
+    {
+        motionPaused = paused;
     }
 
     public void RetreatOffScreen(Camera targetCamera)
@@ -289,6 +301,11 @@ public sealed class DarknessController : MonoBehaviour
 
         while (elapsed < safeDuration)
         {
+            while (motionPaused)
+            {
+                yield return null;
+            }
+
             elapsed += Time.unscaledDeltaTime;
             contactPosition.x =
                 target.position.x - visibleFrontOffset + tutorialCaptureOverlap;
@@ -328,6 +345,11 @@ public sealed class DarknessController : MonoBehaviour
 
         while (elapsed < safeDuration)
         {
+            while (motionPaused)
+            {
+                yield return null;
+            }
+
             elapsed += Time.unscaledDeltaTime;
             float progress = Mathf.SmoothStep(
                 0f,
