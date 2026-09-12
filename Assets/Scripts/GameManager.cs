@@ -48,6 +48,9 @@ public sealed class GameManager : MonoBehaviour
     public event Action<LampController, bool> LampLitEvent;
     public event Action<int> SparksChanged;
     public event Action<int> LivesChanged;
+    // Fired when the darkness catches the player and a life is lost, but
+    // the run continues (not game over - that's LevelEndedEvent instead).
+    public event Action DarknessCaughtPlayer;
     public event Action LevelStartedEvent;
     public event Action RespawnRequestedEvent;
     public event Action<bool> LevelEndedEvent;
@@ -295,6 +298,8 @@ public sealed class GameManager : MonoBehaviour
             FailLevel();
             return;
         }
+
+        DarknessCaughtPlayer?.Invoke();
 
         if (RespawnRequestedEvent != null)
         {

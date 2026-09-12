@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 // Cycles the character's walk frames while moving, shows a still jump
@@ -47,6 +48,12 @@ public sealed class CharacterAnimator : MonoBehaviour
     private bool facingRight = true;
     private int frameIndex;
     private float frameTimer;
+
+    // Fired every time the walk cycle advances a frame (the "beat" of a
+    // step). FootstepController listens to this instead of guessing timing
+    // on its own. The bool is the current wet state, so the listener can
+    // swap surfaces without needing its own reference to CharacterWetState.
+    public event Action<bool> Footstep;
 
     private void Awake()
     {
@@ -128,6 +135,7 @@ public sealed class CharacterAnimator : MonoBehaviour
         {
             frameTimer -= secondsPerFrame;
             frameIndex = (frameIndex + 1) % 3;
+            Footstep?.Invoke(isWet);
         }
 
         Sprite[] rightFrames = isWet ? walkRightWetFrames : walkRightFrames;
