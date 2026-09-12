@@ -16,6 +16,7 @@ public sealed class GameOverPanel : MonoBehaviour
     [SerializeField] private Button levelSelectButton;
     [SerializeField, Min(0f)] private float fadeDuration = 0.45f;
     [SerializeField] private GameOverDarknessTransition darknessTransition;
+    [SerializeField] private AudioSource gameOverMusic;
     [SerializeField] private RectTransform card;
     [SerializeField, Min(0f)] private float entranceLift = 38f;
     [SerializeField, Range(0.8f, 1f)] private float entranceScale = 0.97f;
@@ -62,6 +63,7 @@ public sealed class GameOverPanel : MonoBehaviour
         }
 
         shown = true;
+        gameOverMusic?.Play();
         restartScene = SceneManager.GetActiveScene().path;
         levelSelectScene = selectScene;
         lampsText.text = $"{manager.UniqueLampsLit} / {manager.TotalLamps}";
