@@ -35,6 +35,9 @@ public sealed class LampController : MonoBehaviour
     [SerializeField] private ParticleSystem lightingEffect;
     [SerializeField] private ParticleSystem extinguishEffect;
 
+    [Header("Gust feedback")]
+    [SerializeField, Min(0f)] private float gustParticleSidewaysSpeed = 4f;
+
     [Header("Audio - two separate sounds, two separate slots")]
     // CASTING: plays once at the start of the hold, for the whole
     // timeToLight duration (the "charging" whoosh).
@@ -70,6 +73,10 @@ public sealed class LampController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Color restingColour = Color.white;
     private bool tutorialHighlighted;
+    private int relightPulseCount;
+    private float relightPulseElapsed = -1f;
+    private float relightPulseDuration;
+    private float relightPulseGap;
 
     public event Action<LampController, bool> Lit;
 
@@ -169,6 +176,11 @@ public sealed class LampController : MonoBehaviour
 
     public void Extinguish()
     {
+        Extinguish(Vector2.zero);
+    }
+
+    public void Extinguish(Vector2 windDirection)
+    {
         // Gusts remove the current light but preserve HasEverBeenLit so the
         // relight awards the separate relighting Spark exactly once.
         if (!isLit)
@@ -180,9 +192,23 @@ public sealed class LampController : MonoBehaviour
         holdTimer = 0f;
         if (extinguishEffect != null)
         {
+            AimExtinguishParticles(windDirection);
             extinguishEffect.Play();
         }
         ApplySprite();
+    }
+
+    public void PlayRelightReminder(int pulseCount, float pulseDuration, float pulseGap)
+    {
+        if (isLit)
+        {
+            return;
+        }
+
+        relightPulseCount = Mathf.Max(1, pulseCount);
+        relightPulseDuration = Mathf.Max(0.05f, pulseDuration);
+        relightPulseGap = Mathf.Max(0f, pulseGap);
+        relightPulseElapsed = 0f;
     }
 
     public void SetTutorialHighlighted(bool highlighted)
@@ -317,26 +343,76 @@ public sealed class LampController : MonoBehaviour
             return;
         }
 
-        float pulse = (Mathf.Sin(Time.unscaledTime * 5f) + 1f) * 0.5f;
+        float idlePulse = (Mathf.Sin(Time.unscaledTime * 5f) + 1f) * 0.5f;
+        float relightPulse = EvaluateRelightPulse();
+        Color feedbackColour = restingColour;
 
         if (tutorialHighlighted)
         {
-            spriteRenderer.color = Color.Lerp(
+            feedbackColour = Color.Lerp(
                 restingColour,
                 new Color(1f, 0.82f, 0.32f, restingColour.a),
-                pulse * 0.65f);
-            return;
+                idlePulse * 0.65f);
         }
-
-        if (nearbyPlayer == null || isLit || GameplayCategory == LampGameplayCategory.Standard)
+        else if (nearbyPlayer != null && !isLit && GameplayCategory != LampGameplayCategory.Standard)
         {
-            spriteRenderer.color = restingColour;
+            Color categoryColour = ProgressColour;
+            categoryColour.a = restingColour.a;
+            feedbackColour = Color.Lerp(restingColour, categoryColour, 0.16f + idlePulse * 0.2f);
+        }
+
+        // Two short warm flashes make an extinguished lamp readable as a
+        // mandatory relight target even when no tutorial overlay is assigned.
+        if (!isLit && relightPulse > 0f)
+        {
+            Color reminderColour = new Color(1f, 0.76f, 0.28f, restingColour.a);
+            feedbackColour = Color.Lerp(feedbackColour, reminderColour, relightPulse * 0.82f);
+        }
+
+        spriteRenderer.color = feedbackColour;
+    }
+
+    private void AimExtinguishParticles(Vector2 windDirection)
+    {
+        if (extinguishEffect == null || windDirection.sqrMagnitude < 0.0001f)
+        {
             return;
         }
 
-        Color categoryColour = ProgressColour;
-        categoryColour.a = restingColour.a;
-        spriteRenderer.color = Color.Lerp(restingColour, categoryColour, 0.16f + pulse * 0.2f);
+        Vector2 direction = windDirection.normalized;
+        ParticleSystem.VelocityOverLifetimeModule velocity = extinguishEffect.velocityOverLifetime;
+        velocity.enabled = true;
+        velocity.space = ParticleSystemSimulationSpace.World;
+        velocity.x = new ParticleSystem.MinMaxCurve(direction.x * gustParticleSidewaysSpeed);
+        velocity.y = new ParticleSystem.MinMaxCurve(direction.y * gustParticleSidewaysSpeed);
+    }
+
+    private float EvaluateRelightPulse()
+    {
+        if (relightPulseElapsed < 0f || relightPulseCount <= 0)
+        {
+            return 0f;
+        }
+
+        float cycle = relightPulseDuration + relightPulseGap;
+        float totalDuration = relightPulseCount * relightPulseDuration +
+            Mathf.Max(0, relightPulseCount - 1) * relightPulseGap;
+
+        if (relightPulseElapsed >= totalDuration)
+        {
+            relightPulseElapsed = -1f;
+            relightPulseCount = 0;
+            return 0f;
+        }
+
+        float phase = relightPulseElapsed % cycle;
+        relightPulseElapsed += Time.unscaledDeltaTime;
+        if (phase >= relightPulseDuration)
+        {
+            return 0f;
+        }
+
+        return Mathf.Sin((phase / relightPulseDuration) * Mathf.PI);
     }
 
     private LampGameplayCategory ResolveGameplayCategory()
@@ -427,3 +503,9 @@ public sealed class LampController : MonoBehaviour
         ResetHold();
     }
 }
+
+
+
+
+
+
