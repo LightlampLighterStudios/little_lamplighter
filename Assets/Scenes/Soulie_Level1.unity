@@ -48836,7 +48836,7 @@ MonoBehaviour:
   gameManager: {fileID: 1604115131}
   darkness: {fileID: 334592085}
   advanceSpeed: 8
-  pushBackDistance: 12
+  pushBackDistance: 15
   resetX: -53
   clampTrailingDistance: 1
   maximumTrailingDistance: 24
