@@ -197,6 +197,15 @@ public sealed class ResultsDisplay : MonoBehaviour
 
     private void Continue()
     {
+        // The final level's Continue is an ending, rather than another level.
+        // Preserve a one-shot request across the scene load so the menu opens
+        // its existing CreditsPanel instead of its usual landing panel.
+        if (ResultsSession.RestartScene == "Elliot_Level4" &&
+            ResultsSession.ContinueScene == "Cayla_MainMenu")
+        {
+            MainMenuCreditsPanelActivator.Request();
+        }
+
         LoadStoredScene(ResultsSession.ContinueScene);
     }
 

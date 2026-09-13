@@ -5285,7 +5285,7 @@ MonoBehaviour:
   levelSelectButton: {fileID: 1400787000}
   player: {fileID: 445935891}
   levelOneDemoOnly: 0
-  continueScene: 
+  continueScene: Cayla_MainMenu
   levelSelectScene: Cayla_MainMenu
   runOffDuration: 1.1
   runOffSpeed: 12
