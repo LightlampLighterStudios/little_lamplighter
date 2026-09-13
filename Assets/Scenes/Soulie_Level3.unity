@@ -18380,7 +18380,7 @@ MonoBehaviour:
   lampProgressFill: {fileID: 1358475916}
   boneIcon: {fileID: 0}
   dogRecoveryPrompt: {fileID: 0}
-  lampProgressOffset: {x: 0, y: 80}
+  lampProgressClearance: 18
 --- !u!224 &636645525
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19548,7 +19548,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &887716034
 SpriteRenderer:
   serializedVersion: 2
@@ -21838,7 +21838,7 @@ RectTransform:
   m_GameObject: {fileID: 1186420300}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 636645525}
@@ -24783,7 +24783,7 @@ RectTransform:
   m_GameObject: {fileID: 1695463538}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 636645525}
@@ -26416,7 +26416,7 @@ RectTransform:
   m_GameObject: {fileID: 1886859293}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 636645525}
