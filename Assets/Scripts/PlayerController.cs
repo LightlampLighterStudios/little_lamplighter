@@ -24,6 +24,7 @@ public sealed class PlayerController : MonoBehaviour
     private bool grounded = true;
     private bool controlsEnabled = true;
     private bool movementEnabled = true;
+    private bool forwardProgressBlocked;
     private Coroutine slowRoutine;
 
     // Stores whether the player is currently holding the interact button.
@@ -34,7 +35,10 @@ public sealed class PlayerController : MonoBehaviour
 
     public Rigidbody2D Body => body;
     public bool IsGrounded => grounded;
-    public float MoveInput => controlsEnabled && movementEnabled ? moveInput : 0f;
+    private float EffectiveMoveInput => forwardProgressBlocked
+        ? Mathf.Min(moveInput, 0f)
+        : moveInput;
+    public float MoveInput => controlsEnabled && movementEnabled ? EffectiveMoveInput : 0f;
 
     private void Start()
     {
@@ -89,7 +93,7 @@ public sealed class PlayerController : MonoBehaviour
         }
 
         body.linearVelocity = new Vector2(
-            controlsEnabled && movementEnabled ? moveInput * horizontalSpeed : 0f,
+            controlsEnabled && movementEnabled ? EffectiveMoveInput * horizontalSpeed : 0f,
             body.linearVelocity.y);
 
         // keep him inside the allowed zone we don't want our littleLamplighter walking of the screen
@@ -170,6 +174,18 @@ public sealed class PlayerController : MonoBehaviour
         movementEnabled = enabled;
 
         if (!enabled && body != null)
+        {
+            body.linearVelocity = new Vector2(0f, body.linearVelocity.y);
+        }
+    }
+
+    public void SetForwardProgressBlocked(bool blocked)
+    {
+        forwardProgressBlocked = blocked;
+
+        // Cancel existing rightward momentum as soon as the gust extinguishes
+        // the lamp, while still allowing the player to walk left and relight it.
+        if (blocked && body != null && body.linearVelocity.x > 0f)
         {
             body.linearVelocity = new Vector2(0f, body.linearVelocity.y);
         }

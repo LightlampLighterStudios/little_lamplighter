@@ -193,7 +193,11 @@ public sealed class TutorialDirector : MonoBehaviour
         firstLamp?.SetTutorialHighlighted(false);
         gustLamp?.SetTutorialHighlighted(false);
         darkness?.SetTutorialProtection(false);
-        if (gameManager != null && !gameManager.IsLevelEnded) player?.SetMovementEnabled(true);
+        if (gameManager != null && !gameManager.IsLevelEnded)
+        {
+            player?.SetMovementEnabled(true);
+            player?.SetForwardProgressBlocked(false);
+        }
     }
 
     private bool IsGuidedLesson() => state == TutorialState.FirstLamp || state == TutorialState.GustLamp ||
@@ -206,8 +210,10 @@ public sealed class TutorialDirector : MonoBehaviour
         firstLamp.SetTutorialHighlighted(state == TutorialState.FirstLamp);
         gustLamp.SetTutorialHighlighted(state == TutorialState.GustLamp || state == TutorialState.Relight);
         darkness.SetTutorialProtection(!firstLampLearned || IsGuidedLesson());
-        // Relighting requires walking back from the gust trigger, so movement stays available.
+        // During RELIGHT the player may walk back toward the lamp, but cannot
+        // continue farther into the level until the lamp is lit again.
         player.SetMovementEnabled(state != TutorialState.FirstLamp && state != TutorialState.GustLamp);
+        player.SetForwardProgressBlocked(state == TutorialState.Relight);
         switch (state)
         {
             case TutorialState.Opening:
@@ -375,6 +381,7 @@ public sealed class TutorialDirector : MonoBehaviour
         }
         if (player != null)
         {
+            player.SetForwardProgressBlocked(false);
             player.MovementPerformed -= HandleOpeningMovement;
             player.JumpPerformed -= HandleJump;
         }
