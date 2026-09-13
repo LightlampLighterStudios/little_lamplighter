@@ -21220,7 +21220,7 @@ MonoBehaviour:
   secondJumpPromptOffset: {x: 0, y: -8.6, z: 0}
   openingDarknessDelay: 0.4
   darknessCaptureDuration: 4
-  darknessRecoveryDistance: 8
+  darknessRecoveryDistance: 0
   recoveryLampHorizontalOffset: 2.8
   movementPrompt: {fileID: 1986906867}
   lampPrompt: {fileID: 632629421}
