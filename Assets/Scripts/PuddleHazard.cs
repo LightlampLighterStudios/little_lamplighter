@@ -88,7 +88,10 @@ public sealed class PuddleHazard : MonoBehaviour
         {
             splashAudio.Play();
         }
-        splashEffect.Play();
+        if (splashEffect != null)
+        {
+            splashEffect.Play();
+        }
         splashRoutine = StartCoroutine(PlaySplashFeedback());
         player.ApplySlow(speedMultiplier, slowDuration);
         PlayerEntered?.Invoke(this, player);
