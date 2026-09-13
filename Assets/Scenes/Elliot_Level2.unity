@@ -116230,6 +116230,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PauseMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 819993247645240826, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7963610302433362790, guid: e74f9fea5ee466a49876a0f9a656709a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -149901,6 +149906,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 0.96364105
+      objectReference: {fileID: 0}
+    - target: {fileID: 2951522018370714578, guid: d0d0230419fb1374a96d380b37f70517,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3564889673673717626, guid: d0d0230419fb1374a96d380b37f70517,
         type: 3}

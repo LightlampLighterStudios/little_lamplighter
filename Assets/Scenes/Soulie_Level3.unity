@@ -20102,6 +20102,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PauseMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 819993247645240826, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7963610302433362790, guid: e74f9fea5ee466a49876a0f9a656709a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -26672,6 +26677,16 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 0.96364105
       objectReference: {fileID: 0}
+    - target: {fileID: 2685278046411230109, guid: d0d0230419fb1374a96d380b37f70517,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 99.79546
+      objectReference: {fileID: 0}
+    - target: {fileID: 3525297760600610310, guid: d0d0230419fb1374a96d380b37f70517,
+        type: 3}
+      propertyPath: seamOverlap
+      value: 0.79
+      objectReference: {fileID: 0}
     - target: {fileID: 3564889673673717626, guid: d0d0230419fb1374a96d380b37f70517,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -26991,6 +27006,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 0.96364105
+      objectReference: {fileID: 0}
+    - target: {fileID: 7555625203868750268, guid: d0d0230419fb1374a96d380b37f70517,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 49.89773
       objectReference: {fileID: 0}
     - target: {fileID: 7810608146882639401, guid: d0d0230419fb1374a96d380b37f70517,
         type: 3}
