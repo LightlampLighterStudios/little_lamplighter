@@ -24,6 +24,12 @@ public sealed class DarknessController : MonoBehaviour
     private Coroutine retreatRoutine;
     private float trailingDistanceAllowance;
     private bool motionPaused;
+    private bool tutorialProtected;
+
+    public void SetTutorialProtection(bool protectedFromContact)
+    {
+        tutorialProtected = protectedFromContact;
+    }
 
     public bool IsActiveThreat => activeThreat;
     public bool IsMotionPaused => motionPaused;
@@ -82,6 +88,7 @@ public sealed class DarknessController : MonoBehaviour
 
     private void Update()
     {
+        if (tutorialProtected) return;
         if (
             motionPaused ||
             !activeThreat ||
@@ -443,12 +450,19 @@ public sealed class DarknessController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (contactLocked || other.GetComponentInParent<PlayerController>() == null)
+        if (tutorialProtected || motionPaused || !activeThreat || contactLocked ||
+            gameManager == null || !gameManager.IsClockRunning ||
+            other.GetComponentInParent<PlayerController>() == null)
         {
             return;
         }
 
         contactLocked = true;
         gameManager?.HandleDarknessContact();
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        OnTriggerEnter2D(other);
     }
 }

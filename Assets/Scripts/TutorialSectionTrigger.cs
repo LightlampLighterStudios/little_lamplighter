@@ -14,6 +14,13 @@ public sealed class TutorialSectionTrigger : MonoBehaviour
     [SerializeField] private TutorialSectionType sectionType;
     [SerializeField] private TutorialDirector director;
     private bool triggered;
+    public bool IsTriggered => triggered;
+
+    public void RestoreState(bool wasTriggered)
+    {
+        triggered = wasTriggered;
+        gameObject.SetActive(!wasTriggered || sectionType == TutorialSectionType.PuddleCleared);
+    }
 
     private void Awake()
     {

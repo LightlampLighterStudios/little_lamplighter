@@ -5311,7 +5311,7 @@ MonoBehaviour:
   lampProgressFill: {fileID: 540153304}
   boneIcon: {fileID: 0}
   dogRecoveryPrompt: {fileID: 0}
-  lampProgressOffset: {x: 0, y: 80}
+  lampProgressClearance: 18
 --- !u!114 &30577734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122630,18 +122630,25 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  movementPrompt: {fileID: 1079242559}
-  lampPrompt: {fileID: 931661856}
-  jumpPrompt: {fileID: 1973647557}
-  relightPrompt: {fileID: 2126229937}
-  lampPromptText: {fileID: 557325559}
-  fadeOverlay: {fileID: 1667886187}
-  fadeDuration: 0.3
-  splashHoldDuration: 0.35
+  promptPrefab: {fileID: 0}
+  promptCanvas: {fileID: 0}
+  moveAnchor: {fileID: 0}
+  jumpAnchor: {fileID: 0}
+  playerPromptOffset: {x: 0, y: 5, z: 0}
+  lampPromptOffset: {x: 0, y: -11.8, z: 0}
+  firstJumpPromptOffset: {x: 0, y: -8.6, z: 0}
+  secondJumpPromptOffset: {x: 0, y: -8.6, z: 0}
   openingDarknessDelay: 0.4
   darknessCaptureDuration: 4
   darknessRecoveryDistance: 8
   recoveryLampHorizontalOffset: 2.8
+  movementPrompt: {fileID: 1079242559}
+  lampPrompt: {fileID: 931661856}
+  jumpPrompt: {fileID: 1973647557}
+  relightPrompt: {fileID: 2126229937}
+  fadeOverlay: {fileID: 1667886187}
+  fadeDuration: 0.3
+  splashHoldDuration: 0.35
   darknessRespawnMargin: 1
 --- !u!1 &1177933255
 GameObject:
@@ -133499,7 +133506,7 @@ MonoBehaviour:
   gameManager: {fileID: 1604115131}
   darkness: {fileID: 404431711}
   advanceSpeed: 9
-  pushBackDistance: 15
+  pushBackDistance: 18
   resetX: -53
   clampTrailingDistance: 1
   maximumTrailingDistance: 24
