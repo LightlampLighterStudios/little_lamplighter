@@ -34,6 +34,7 @@ public sealed class PlayerController : MonoBehaviour
 
     public Rigidbody2D Body => body;
     public bool IsGrounded => grounded;
+    public float MoveInput => controlsEnabled && movementEnabled ? moveInput : 0f;
 
     private void Start()
     {

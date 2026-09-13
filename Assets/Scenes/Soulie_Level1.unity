@@ -5350,6 +5350,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &88069527
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 88069528}
+  m_Layer: 0
+  m_Name: PrePuddlePromptAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &88069528
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 88069527}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 67.16, y: 2.7000003, z: -0.96}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1341935904}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &99985608
 GameObject:
   m_ObjectHideFlags: 0
@@ -21179,18 +21210,25 @@ MonoBehaviour:
   - {fileID: 2024018509}
   - {fileID: 1208690743}
   - {fileID: 518083715}
-  movementPrompt: {fileID: 1986906867}
-  lampPrompt: {fileID: 632629421}
-  jumpPrompt: {fileID: 1319877949}
-  relightPrompt: {fileID: 868963907}
-  lampPromptText: {fileID: 1706873134}
-  fadeOverlay: {fileID: 1534803683}
-  fadeDuration: 0.3
-  splashHoldDuration: 0.35
+  promptPrefab: {fileID: 1000, guid: b0e4973a77575ce2a76275d7450138b5, type: 3}
+  promptCanvas: {fileID: 636645525}
+  moveAnchor: {fileID: 418046784}
+  jumpAnchor: {fileID: 88069528}
+  playerPromptOffset: {x: 0, y: 5, z: 0}
+  lampPromptOffset: {x: 0, y: -11.8, z: 0}
+  firstJumpPromptOffset: {x: 0, y: -8.6, z: 0}
+  secondJumpPromptOffset: {x: 0, y: -8.6, z: 0}
   openingDarknessDelay: 0.4
   darknessCaptureDuration: 4
   darknessRecoveryDistance: 8
   recoveryLampHorizontalOffset: 2.8
+  movementPrompt: {fileID: 1986906867}
+  lampPrompt: {fileID: 632629421}
+  jumpPrompt: {fileID: 1319877949}
+  relightPrompt: {fileID: 868963907}
+  fadeOverlay: {fileID: 1534803683}
+  fadeDuration: 0.3
+  splashHoldDuration: 0.35
   darknessRespawnMargin: 1
 --- !u!1 &312337980
 GameObject:
@@ -26503,6 +26541,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 20}
   m_EdgeRadius: 0
+--- !u!1 &418046783
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 418046784}
+  m_Layer: 0
+  m_Name: MovePromptAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &418046784
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418046783}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -18, y: -1.52, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1341935904}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &433842446
 GameObject:
   m_ObjectHideFlags: 0
@@ -42987,7 +43056,7 @@ MonoBehaviour:
   lampProgressFill: {fileID: 1358475916}
   boneIcon: {fileID: 0}
   dogRecoveryPrompt: {fileID: 0}
-  lampProgressOffset: {x: 0, y: 80}
+  lampProgressClearance: 18
 --- !u!224 &636645525
 RectTransform:
   m_ObjectHideFlags: 0
@@ -57898,6 +57967,8 @@ Transform:
   - {fileID: 410000002}
   - {fileID: 410000005}
   - {fileID: 818291288}
+  - {fileID: 88069528}
+  - {fileID: 418046784}
   m_Father: {fileID: 2571237126144014319}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1341935905
@@ -86460,7 +86531,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1986906868
 MonoBehaviour:
   m_ObjectHideFlags: 0
