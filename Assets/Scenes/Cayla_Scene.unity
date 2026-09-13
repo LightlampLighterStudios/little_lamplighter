@@ -343,6 +343,7 @@ MonoBehaviour:
   splashOffset: {x: 0, y: 0, z: 0}
   splashSortingOrder: 5
   splashWidthRatio: 1
+  targetScaleMultiplier: 1.5
 --- !u!114 &92090155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -455,6 +456,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 1.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 2951522018370714578, guid: d0d0230419fb1374a96d380b37f70517,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3564889673673717626, guid: d0d0230419fb1374a96d380b37f70517,
         type: 3}
@@ -1558,6 +1564,7 @@ MonoBehaviour:
   splashOffset: {x: 0, y: 0, z: 0}
   splashSortingOrder: 5
   splashWidthRatio: 1
+  targetScaleMultiplier: 1.5
 --- !u!114 &531634160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2118,6 +2125,7 @@ MonoBehaviour:
   splashOffset: {x: 0, y: 0, z: 0}
   splashSortingOrder: 5
   splashWidthRatio: 1
+  targetScaleMultiplier: 1.5
 --- !u!114 &993759200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2325,6 +2333,7 @@ MonoBehaviour:
   splashOffset: {x: 0, y: 0, z: 0}
   splashSortingOrder: 5
   splashWidthRatio: 1
+  targetScaleMultiplier: 1.5
 --- !u!114 &1396146191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3023,6 +3032,74 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1001 &1633169292
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 819993247645240826, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_Name
+      value: PauseMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963610302433362790, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963610302433362790, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963610302433362790, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963610302433362790, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963610302433362790, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963610302433362790, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963610302433362790, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963610302433362790, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963610302433362790, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7963610302433362790, guid: e74f9fea5ee466a49876a0f9a656709a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e74f9fea5ee466a49876a0f9a656709a, type: 3}
 --- !u!1 &1678412966
 GameObject:
   m_ObjectHideFlags: 0
@@ -3319,6 +3396,7 @@ MonoBehaviour:
   splashOffset: {x: 0, y: 0, z: 0}
   splashSortingOrder: 5
   splashWidthRatio: 1
+  targetScaleMultiplier: 1.5
 --- !u!114 &1769750386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3499,6 +3577,7 @@ MonoBehaviour:
   splashOffset: {x: 0, y: 0, z: 0}
   splashSortingOrder: 5
   splashWidthRatio: 1
+  targetScaleMultiplier: 1.5
 --- !u!114 &1805840999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4987,3 +5066,4 @@ SceneRoots:
   - {fileID: 7579629868938918479}
   - {fileID: 129896545}
   - {fileID: 14402706}
+  - {fileID: 1633169292}

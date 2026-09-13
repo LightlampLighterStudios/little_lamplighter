@@ -14,6 +14,15 @@ public sealed class ScrollingLayer : MonoBehaviour
     // Slightly overlaps neighbouring tiles to hide thin seams.
     [SerializeField, Range(0f, 5f)] private float seamOverlap = 0.05f;
 
+    // Shifts the whole repeating row without changing the join between tiles.
+    // Negative values move the pavement left; positive values move it right.
+    [Header("Pavement Position")]
+    [SerializeField, Range(-5f, 5f)] private float pavementPhaseOffset;
+
+    // Tracks the phase already applied in edit mode so changing the phase moves
+    // every tile by only the requested amount instead of resetting the row.
+    [SerializeField, HideInInspector] private float previewAppliedPavementPhaseOffset;
+
     private Camera targetCamera;
     private bool isInitialized;
     private float smallestRecycleStep;
@@ -42,6 +51,8 @@ public sealed class ScrollingLayer : MonoBehaviour
         // Store the smallest safe horizontal recycling distance.
         smallestRecycleStep =
             GetSmallestTileWidth() - seamOverlap;
+
+        previewAppliedPavementPhaseOffset = pavementPhaseOffset;
 
         isInitialized = true;
         return true;
@@ -95,6 +106,78 @@ public sealed class ScrollingLayer : MonoBehaviour
 
         // Arrange the tiles from the camera's left edge again.
         ArrangeTiles();
+    }
+
+    // Reflows the tiles from their current left edge without requiring a
+    // camera. The custom Inspector calls this as the seam slider changes so
+    // the artist can see and save the exact join in edit mode.
+    public bool ApplySeamOverlapPreview()
+    {
+        if (tiles == null || tiles.Length < 2)
+        {
+            return false;
+        }
+
+        foreach (SpriteRenderer tile in tiles)
+        {
+            if (tile == null || tile.bounds.size.x <= seamOverlap)
+            {
+                return false;
+            }
+        }
+
+        float nextLeftEdge = tiles[0].bounds.min.x;
+
+        foreach (SpriteRenderer tile in tiles)
+        {
+            SetX(tile.transform, nextLeftEdge + tile.bounds.extents.x);
+            nextLeftEdge = tile.bounds.max.x - seamOverlap;
+        }
+
+        smallestRecycleStep = GetSmallestTileWidth() - seamOverlap;
+        return true;
+    }
+
+    // Applies the Inspector's seam and whole-row position controls in edit
+    // mode. This is deliberately separate from the seam amount: an artist can
+    // correct the pavement's horizontal phase without disturbing its join.
+    public bool ApplySeamAndPhasePreview()
+    {
+        if (tiles == null || tiles.Length < 2)
+        {
+            return false;
+        }
+
+        float phaseDelta =
+            pavementPhaseOffset - previewAppliedPavementPhaseOffset;
+
+        if (!Mathf.Approximately(phaseDelta, 0f))
+        {
+            foreach (SpriteRenderer tile in tiles)
+            {
+                if (tile == null)
+                {
+                    return false;
+                }
+
+                tile.transform.position += Vector3.right * phaseDelta;
+            }
+
+            previewAppliedPavementPhaseOffset = pavementPhaseOffset;
+        }
+
+        return ApplySeamOverlapPreview();
+    }
+
+    // Used by the custom Inspector's fine-position buttons.
+    public bool NudgePavementPhase(float worldUnits)
+    {
+        pavementPhaseOffset = Mathf.Clamp(
+            pavementPhaseOffset + worldUnits,
+            -5f,
+            5f);
+
+        return ApplySeamAndPhasePreview();
     }
 
     public Vector3[] CaptureCheckpointPositions()
@@ -292,7 +375,8 @@ public sealed class ScrollingLayer : MonoBehaviour
     private void ArrangeTiles()
     {
         // Start the row at the camera's left edge.
-        float nextLeftEdge = GetCameraLeftEdge();
+        float nextLeftEdge =
+            GetCameraLeftEdge() + pavementPhaseOffset;
 
         // Place each tile immediately after the previous tile.
         foreach (SpriteRenderer tile in tiles)
@@ -307,6 +391,8 @@ public sealed class ScrollingLayer : MonoBehaviour
             nextLeftEdge =
                 tile.bounds.max.x - seamOverlap;
         }
+
+        previewAppliedPavementPhaseOffset = pavementPhaseOffset;
     }
 
     private void RecycleOffscreenTiles(float signedDistanceMoved)
