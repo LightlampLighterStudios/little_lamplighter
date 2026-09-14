@@ -23,6 +23,8 @@ public sealed class PauseMenuController : MonoBehaviour
     [SerializeField] private Button resumeButton;
     [SerializeField] private Button restartButton;
     [SerializeField] private Button levelSelectButton;
+    [SerializeField] private AudioClip hoverSound;
+    [SerializeField] private AudioClip clickSound;
 
     private GameManager manager;
     private DarknessController darkness;
@@ -58,9 +60,11 @@ public sealed class PauseMenuController : MonoBehaviour
         resumeButton.onClick.AddListener(Resume);
         restartButton.onClick.AddListener(Restart);
         levelSelectButton.onClick.AddListener(ReturnToLevelSelect);
+        ConfigureButtonSounds();
         PrepareSelection(resumeButton);
         PrepareSelection(restartButton);
         PrepareSelection(levelSelectButton);
+        ConfigureVerticalNavigation();
         SetSelectedButton(resumeButton);
         EnsureEventSystem();
     }
@@ -124,6 +128,7 @@ public sealed class PauseMenuController : MonoBehaviour
         paused = true;
         overlay.SetActive(true);
         SetSelectedButton(resumeButton);
+        resumeButton.GetComponent<ButtonSfx>()?.SuppressNextSelectionSound();
         EventSystem.current?.SetSelectedGameObject(resumeButton.gameObject);
     }
 
@@ -173,6 +178,64 @@ public sealed class PauseMenuController : MonoBehaviour
 #else
         system.AddComponent<StandaloneInputModule>();
 #endif
+    }
+
+    private void ConfigureButtonSounds()
+    {
+        if (hoverSound == null || clickSound == null)
+        {
+            Debug.LogWarning("Pause menu button sounds are not assigned.", this);
+            return;
+        }
+
+        UISoundManager soundManager = UISoundManager.instance;
+        if (soundManager == null)
+        {
+            GameObject soundHost = new GameObject("Pause Menu UI Sound Manager");
+            soundHost.transform.SetParent(transform, false);
+            soundManager = soundHost.AddComponent<UISoundManager>();
+            soundManager.Configure(CreateUiAudioSource(soundHost, hoverSound), CreateUiAudioSource(soundHost, clickSound));
+        }
+
+        AddButtonSfx(resumeButton);
+        AddButtonSfx(restartButton);
+        AddButtonSfx(levelSelectButton);
+    }
+
+    private static AudioSource CreateUiAudioSource(GameObject host, AudioClip clip)
+    {
+        AudioSource source = host.AddComponent<AudioSource>();
+        source.clip = clip;
+        source.playOnAwake = false;
+        source.spatialBlend = 0f;
+        return source;
+    }
+
+    private static void AddButtonSfx(Button button)
+    {
+        if (button != null && button.GetComponent<ButtonSfx>() == null)
+        {
+            button.gameObject.AddComponent<ButtonSfx>();
+        }
+    }
+
+    private void ConfigureVerticalNavigation()
+    {
+        ConfigureNavigation(resumeButton, null, restartButton);
+        ConfigureNavigation(restartButton, resumeButton, levelSelectButton);
+        ConfigureNavigation(levelSelectButton, restartButton, null);
+    }
+
+    private static void ConfigureNavigation(Button button, Button up, Button down)
+    {
+        Navigation navigation = button.navigation;
+        navigation.mode = Navigation.Mode.Explicit;
+        navigation.wrapAround = false;
+        navigation.selectOnUp = up;
+        navigation.selectOnDown = down;
+        navigation.selectOnLeft = null;
+        navigation.selectOnRight = null;
+        button.navigation = navigation;
     }
 
     private void RestoreGameplayAfterPause()

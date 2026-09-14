@@ -18,7 +18,30 @@ public sealed class UISoundManager : MonoBehaviour
 
     private void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         instance = this;
+
+        // The authored main-menu manager is a root object. Keeping that one
+        // alive lets every subsequent UI screen reuse the same clips.
+        if (gameObject.name == "UISoundManager" && transform.parent == null)
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
+    // Used by runtime-created menus (such as PauseMenu) that already own the
+    // clips but do not need serialized AudioClipVariations components.
+    public void Configure(AudioSource hover, AudioSource click)
+    {
+        hoverAudio = hover;
+        hoverAudioVariations = null;
+        clickAudio = click;
+        clickAudioVariations = null;
     }
 
     public void PlayHover()

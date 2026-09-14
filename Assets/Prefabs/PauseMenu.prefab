@@ -231,6 +231,8 @@ MonoBehaviour:
   resumeButton: {fileID: 4123129533727917920}
   restartButton: {fileID: 3241771490562093876}
   levelSelectButton: {fileID: 1166688202900108339}
+  hoverSound: {fileID: 8300000, guid: 83b62d003441f8642bb7175fd0912332, type: 3}
+  clickSound: {fileID: 8300000, guid: f812d559287c5914d807cf2721766de3, type: 3}
 --- !u!1 &1965865620816572810
 GameObject:
   m_ObjectHideFlags: 0

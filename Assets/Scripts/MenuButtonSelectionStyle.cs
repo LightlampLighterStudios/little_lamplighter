@@ -107,8 +107,14 @@ public sealed class MenuButtonSelectionBootstrap : MonoBehaviour
             groupSignatures[canvasId] = signature;
 
             Button[] group = buttons.ToArray();
+            ConfigureMenuNavigation(buttons);
             foreach (Button button in group)
             {
+                if (button.GetComponent<ButtonSfx>() == null)
+                {
+                    button.gameObject.AddComponent<ButtonSfx>();
+                }
+
                 MenuButtonSelectionStyle tracker = button.GetComponent<MenuButtonSelectionStyle>();
                 if (tracker == null) tracker = button.gameObject.AddComponent<MenuButtonSelectionStyle>();
                 tracker.Configure(group);
@@ -117,8 +123,41 @@ public sealed class MenuButtonSelectionBootstrap : MonoBehaviour
             Button current = EventSystem.current != null
                 ? EventSystem.current.currentSelectedGameObject?.GetComponent<Button>()
                 : null;
-            if (current == null || !buttons.Contains(current)) Select(buttons[0]);
+            Button defaultButton = GetDefaultButton(buttons);
+            if (SceneManager.GetActiveScene().name == "Cayla_Results") Select(defaultButton);
+            else if (current == null || !buttons.Contains(current)) Select(defaultButton);
             else current.GetComponent<MenuButtonSelectionStyle>()?.OnSelect(null);
+        }
+    }
+
+    private static Button GetDefaultButton(List<Button> buttons)
+    {
+        if (SceneManager.GetActiveScene().name == "Cayla_Results")
+        {
+            foreach (Button button in buttons)
+                if (button.name == "ContinueButton") return button;
+        }
+
+        return buttons[0];
+    }
+
+    // Authored scenes used explicit navigation, but several linked only the
+    // first and last buttons. Rebuild active menus as a sequential list with
+    // the direction matching the authored layout.
+    private static void ConfigureMenuNavigation(List<Button> buttons)
+    {
+        bool isLevelCompleteMenu = SceneManager.GetActiveScene().name == "Cayla_Results";
+        for (int index = 0; index < buttons.Count; index++)
+        {
+            Button button = buttons[index];
+            Navigation navigation = button.navigation;
+            navigation.mode = Navigation.Mode.Explicit;
+            navigation.wrapAround = false;
+            navigation.selectOnUp = isLevelCompleteMenu ? null : index > 0 ? buttons[index - 1] : null;
+            navigation.selectOnDown = isLevelCompleteMenu ? null : index < buttons.Count - 1 ? buttons[index + 1] : null;
+            navigation.selectOnLeft = isLevelCompleteMenu && index > 0 ? buttons[index - 1] : null;
+            navigation.selectOnRight = isLevelCompleteMenu && index < buttons.Count - 1 ? buttons[index + 1] : null;
+            button.navigation = navigation;
         }
     }
 
@@ -145,6 +184,7 @@ public sealed class MenuButtonSelectionBootstrap : MonoBehaviour
 
     private static void Select(Button button)
     {
+        button.GetComponent<ButtonSfx>()?.SuppressNextSelectionSound();
         button.GetComponent<MenuButtonSelectionStyle>()?.OnSelect(null);
         EventSystem.current?.SetSelectedGameObject(button.gameObject);
     }
